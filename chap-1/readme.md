@@ -1,6 +1,6 @@
 ## Summary
 > Make reasonable assumption about the data and you evaluate only a few reasonable models. <br>
-> If you make absolutely no assumption about the data then there's no reason to prefer one model over any other (No Free Lunch theorm). <br>
+> If you make absolutely no assumption about the data then there's no reason to prefer one model over any other (No Free Lunch theorem). <br>
 
 - Machine learning is a program that learns from data.
 - Machine learning help humans learn, not replace them.
