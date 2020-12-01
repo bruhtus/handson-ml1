@@ -5,3 +5,4 @@ My approach on **hands-on machine learning with scikit-learn and tensorflow firs
 ### References
 - [View tabular file from terminal](https://stackoverflow.com/questions/1875305/view-tabular-file-such-as-csv-from-command-line).
 - [Tabview](https://github.com/TabViewer/tabview).
+- [Jupyterlab vim extension for V2](https://github.com/jwkvam/jupyterlab-vim/pull/123).
