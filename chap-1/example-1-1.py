@@ -2,7 +2,9 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib
+matplotlib.use('module://drawilleplot')
 import matplotlib.pyplot as plt
+#from matplotlib_terminal import plt
 from fire import Fire
 from sklearn import linear_model, neighbors
 
@@ -20,8 +22,9 @@ def main():
     y = np.c_[country_stats["Life satisfaction"]]
 
     #visualize the data
-    #country_stats.plot(kind='scatter', x='GDP per capita', y='Life satisfaction')
-    #plt.show()
+    country_stats.plot(kind='scatter', x='GDP per capita', y='Life satisfaction')
+    plt.show()
+    #plt.show('block')
 
     #select linear model
     lin_reg_model = linear_model.LinearRegression()
