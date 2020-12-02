@@ -2,6 +2,11 @@
 
 My approach on **hands-on machine learning with scikit-learn and tensorflow first edition by aurelian geron**.
 
+To check if the module already installed (in a terminal):
+```
+python -c 'import module-name' #or 'from module-name import function'
+```
+
 ### References
 - [View tabular file from terminal](https://stackoverflow.com/questions/1875305/view-tabular-file-such-as-csv-from-command-line).
 - [Tabview](https://github.com/TabViewer/tabview).
