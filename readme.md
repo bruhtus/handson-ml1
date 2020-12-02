@@ -20,3 +20,4 @@ python -c 'from module_name import function_name'
 - [AWS CLI Command](https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html).
 - [AWS Open Datasets](https://registry.opendata.aws/).
 - [Hash for consistent train-test set](https://stackoverflow.com/questions/58639969/what-is-the-meaning-of-taking-hash-for-consistent-train-test-set).
+- [Another test set with hash](https://github.com/ageron/handson-ml/issues/71#issuecomment-323021995).
