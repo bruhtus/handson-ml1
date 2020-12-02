@@ -4,7 +4,11 @@ My approach on **hands-on machine learning with scikit-learn and tensorflow firs
 
 To check if the module already installed (in a terminal):
 ```
-python -c 'import module-name' #or 'from module-name import function'
+python -c 'import module_name'
+```
+or
+```
+python -c 'from module_name import function_name'
 ```
 
 ### References
