@@ -11,8 +11,9 @@ or
 python -c 'from module_name import function_name'
 ```
 
-Example of matplotlib in a terminal: <br>
-![matplotlib in terminal](img/matplotlib-terminal.jpg)
+<details><summary>Example of matplotlib in a terminal (expand)</summary>
+<img src="img/matplotlib-terminal.jpg" alt="matplotlib in terminal">
+</details>
 
 ### References
 - [View tabular file from terminal](https://stackoverflow.com/questions/1875305/view-tabular-file-such-as-csv-from-command-line).
