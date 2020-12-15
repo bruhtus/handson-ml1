@@ -18,6 +18,8 @@ python -c 'from module_name import function_name'
 ### References
 - [View tabular file from terminal](https://stackoverflow.com/questions/1875305/view-tabular-file-such-as-csv-from-command-line).
 - [Tabview](https://github.com/TabViewer/tabview).
+- [Visidata: Terminal-based multitool for tabular data](https://www.visidata.org/).
+- [Sc-im: Terminal-based spreadsheet](https://github.com/andmarti1424/sc-im).
 - [Matplotlib terminal](https://github.com/matrach/matplotlib-terminal).
 - [Drawille plot](https://github.com/gooofy/drawilleplot).
 - [Jupyterlab vim extension for V2](https://github.com/jwkvam/jupyterlab-vim/pull/123).
