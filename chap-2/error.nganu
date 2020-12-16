@@ -1,0 +1,38 @@
+/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/sklearn/utils/validation.py:70: FutureWarning: Pass criterion=42 as keyword args. From version 0.25 passing these as positional arguments will result in an error
+  FutureWarning)
+Traceback (most recent call last):
+  File "predictions.py", line 307, in <module>
+    Fire(main)
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/fire/core.py", line 138, in Fire
+    component_trace = _Fire(component, args, parsed_flag_args, context, name)
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/fire/core.py", line 468, in _Fire
+    target=component.__name__)
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/fire/core.py", line 672, in _CallAndUpdateTrace
+    component = fn(*varargs, **kwargs)
+  File "predictions.py", line 187, in main
+    random_forest(new_housing_prepared, housing_labels, 10, 42)
+  File "predictions.py", line 194, in random_forest
+    forest_reg.fit(pipeline, housing_labels)
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/sklearn/ensemble/_forest.py", line 392, in fit
+    for i, t in enumerate(trees))
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/joblib/parallel.py", line 1048, in __call__
+    if self.dispatch_one_batch(iterator):
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/joblib/parallel.py", line 866, in dispatch_one_batch
+    self._dispatch(tasks)
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/joblib/parallel.py", line 784, in _dispatch
+    job = self._backend.apply_async(batch, callback=cb)
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/joblib/_parallel_backends.py", line 208, in apply_async
+    result = ImmediateResult(func)
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/joblib/_parallel_backends.py", line 572, in __init__
+    self.results = batch()
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/joblib/parallel.py", line 263, in __call__
+    for func, args, kwargs in self.items]
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/joblib/parallel.py", line 263, in <listcomp>
+    for func, args, kwargs in self.items]
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/sklearn/ensemble/_forest.py", line 168, in _parallel_build_trees
+    tree.fit(X, y, sample_weight=curr_sample_weight, check_input=False)
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/sklearn/tree/_classes.py", line 1246, in fit
+    X_idx_sorted=X_idx_sorted)
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/sklearn/tree/_classes.py", line 336, in fit
+    criterion = CRITERIA_REG[self.criterion](self.n_outputs_,
+KeyError: 42
