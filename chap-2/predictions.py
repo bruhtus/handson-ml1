@@ -49,58 +49,7 @@ def main(data):
         strat_train_set = housing.loc[train_index]
         strat_test_set = housing.loc[test_index]
 
-    #print(f"Income category:\n{housing['income_cat'].value_counts()/len(housing)}\n")
-    #print(f'test_set head:\n{test_set.head()}\n')
-
-    ##display histogram
-    #housing.hist(bins=50, figsize=(15,15))
-    #housing['median_income'].hist()
-    #housing['income_cat'].hist()
-    #print(f'{plt.show()}\n')
-
-    ##show income category train and test set
-    #print(f"income category test set:\n{strat_test_set['income_cat'].value_counts()/len(strat_test_set)}\n")
-    #print(f"income category train set:\n{strat_train_set['income_cat'].value_counts()/len(strat_test_set)}\n")
-
-    ##compare properties
-    #train_set, test_set = train_test_split(housing, test_size=0.2, random_state=42) #add income_cat to test_set and train_set
-    #compare_props = pd.DataFrame({
-    #    'Overall': income_cat_proportions(housing),
-    #    'Stratified': income_cat_proportions(strat_test_set),
-    #    'Random': income_cat_proportions(test_set),
-    #}).sort_index()
-    #compare_props['Rand. %error'] = 100 * compare_props['Random']/compare_props['Overall'] - 100
-    #compare_props['Strat. %error'] = 100 * compare_props['Stratified']/compare_props['Overall'] - 100
-    #print(f'compare stratified sampling and random sampling:\n{compare_props}')
-
-    ##remove income_cat attribute
-    #for set in (strat_train_set, strat_test_set):
-    #    set.drop(['income_cat'], axis=1, inplace=True)
-
-    #housing = strat_train_set.copy() #create a copy of train set
-    ##plotting again
-    #housing.plot(kind='scatter', x='longitude', y='latitude', alpha=0.4,
-    #             s=housing['population']/100, label='population',
-    #             c='median_house_value', cmap=plt.get_cmap('jet'),
-    #             colorbar=True,)
-    #plt.show()
-
-    ##looking for correlations
-    #corr_matrix = housing.corr()
-    #print(corr_matrix['median_house_value'].sort_values(ascending=False))
-
-    ##anoher way looking for correlations
-    #attributes = ['median_house_value', 'median_income', 'total_rooms', 'housing_median_age']
-    #scatter_matrix(housing[attributes], figsize=(12, 8))
-    #housing.plot(kind='scatter', x='median_income', y='median_house_value', alpha=0.1)
-    #plt.show()
-
-    #look at rooms per households and bedrooms per rooms
-    #housing['rooms_per_households'] = housing['total_rooms']/housing['households']
-    #housing['bedrooms_per_rooms'] = housing['total_bedrooms']/housing['total_rooms']
-    #housing['population_per_household'] = housing['population']/housing['households']
-    #corr_matrix = housing.corr()
-    #print(corr_matrix['median_house_value'].sort_values(ascending=False))
+    #commented_out() start here
 
     housing = strat_train_set.drop('median_house_value', axis=1) #doesn't effect strat_train_set
     housing_labels = strat_train_set['median_house_value'].copy()
@@ -109,41 +58,9 @@ def main(data):
     housing_num = housing.drop('ocean_proximity', axis=1)
 
     imputer.fit(housing_num) #fit the imputer instance to training data
-    #print(imputer.statistics_)
-    #print(housing_num.median().values) #using imputer values
-
-    #x = imputer.transform(housing_num) #numpy array
-    #housing_tr = pd.DataFrame(x, columns=housing_num.columns) #put numpy array to dataframe
-
-    #encoder = LabelEncoder()
-    #housing_cat = housing['ocean_proximity']
-    #housing_cat_encoded = encoder.fit_transform(housing_cat)
-    #print(housing_cat_encoded)
-    #print(encoder.classes_) #IH OCEAN is mapped to 0, INLAND is mapped to 1, and so on
-    #onehot = OneHotEncoder()
-    #housing_cat_OH = onehot.fit_transform(housing_cat_encoded.reshape(-1,1))
-    #print(housing_cat_OH)
-
-    #encoder = LabelBinarizer() #from text categories to integer categories then from integer categories to one-hot vectors (default numpy array)
-    #encoder = LabelBinarizer(sparse_output=True) #from text categories to integer categories then from integer categories to one-hot vectors (sparse matrix instead)
-    #housing_cat_OH = encoder.fit_transform(housing_cat)
-    #print(housing_cat_OH)
-
-    #attr_adder_caa = CombinedAttributesAdder(add_bedrooms_per_room=False) #CombinedAttributesAdder
-    #housing_extra_attribs_caa = attr_adder_caa.transform(housing.values)
-    #print(f'default:\n{housing_extra_attribs_caa}\n')
-    #attr_adder_ft = FunctionTransformer(add_extra_features, validate=False, kw_args={"add_bedrooms_per_room":False}) #FunctionTransformer
-    #housing_extra_attribs_ft = attr_adder_ft.fit_transform(housing.values)
-    #print(f'FunctionTransformer:\n{housing_extra_attribs_ft}')
-
-    #housing_extra_attribs = pd.DataFrame(
-    #    housing_extra_attribs_ft,
-    #    columns=list(housing.columns)+["rooms_per_household", "populations_per_household"],
-    #    index=housing.index)
-    #print(housing_extra_attribs.head())
+    #commented_out_2() start here
 
     #build a pipeline
-
     num_pipeline = Pipeline([
         ('imputer', SimpleImputer(strategy='median')),
         ('attribs_adder', FunctionTransformer(add_extra_features, validate=False)),
@@ -156,25 +73,7 @@ def main(data):
     num_attribs = list(housing_num)
     cat_attribs = ['ocean_proximity']
 
-    #old_num_pipeline = Pipeline([
-    #    ('selector', OldDataFrameSelector(num_attribs)),
-    #    ('imputer', SimpleImputer(strategy='median')),
-    #    ('attribs_adder', FunctionTransformer(add_extra_features, validate=False)),
-    #    ('std_scaler', StandardScaler()),
-    #])
-
-    #old_cat_pipeline = Pipeline([
-    #    ('selector', OldDataFrameSelector(cat_attribs)),
-    #    ('cat_encoder', OneHotEncoder(sparse=False)),
-    #])
-
-    #old_full_pipeline = FeatureUnion([
-    #    ('num_pipeline', old_num_pipeline),
-    #    ('cat_pipeline', old_cat_pipeline),
-    #])
-
-    #old_housing_prepared = old_full_pipeline.fit_transform(housing)
-    #print(f'FeatureUnion pipeline:\n{old_housing_prepared}\n')
+    #old_pipeline() start here
 
     new_full_pipeline = ColumnTransformer([
         ('num', num_pipeline, num_attribs),
@@ -188,6 +87,25 @@ def main(data):
     #decision_tree(new_housing_prepared, housing_labels)
     #linear_regression(new_housing_prepared, housing_labels, housing)
     #svm(new_housing_prepared, housing_labels)
+
+    param_grid = [
+        {'n_estimators': [3, 10, 30], 'max_features': [2, 4, 6, 8]}, #try 3*4 (12) combination of hyperparameters
+        {'bootstrap': [False], 'n_estimators': [3, 10], 'max_features': [2, 3, 4]} #and then try 2*3 (6) combination with bootstrap set as False
+    ]
+
+    forest_reg = RandomForestRegressor(random_state=42)
+    grid_search = GridSearchCV(forest_reg, param_grid, cv=5, scoring='neg_mean_squared_error', return_train_score=True) #train across 5 folds, total of (12+6)*5=90 rounds of training
+    grid_search.fit(new_housing_prepared, housing_labels)
+
+    #print(f'Random Forest Best Params: {grid_search.best_params_}\n')
+    #print(grid_search.best_estimator_)
+
+    #cvres = grid_search.cv_results_
+    #for mean_score, params in zip(cvres['mean_test_score'], cvres['params']):
+    #    print(np.sqrt(-mean_score), params)
+
+    #print('\t')
+    #print(pd.DataFrame(grid_search.cv_results_))
 
 def random_forest(pipeline, housing_labels):
     forest_reg = RandomForestRegressor(n_estimators=10, random_state=42)
@@ -275,6 +193,119 @@ def add_extra_features(X, add_bedrooms_per_room=True):
         return np.c_[X, rooms_per_household, population_per_household, bedrooms_per_room]
     else:
         return np.c_[X, rooms_per_household, population_per_household]
+
+def commented_out():
+    print('the first line commented out')
+    #print(f"Income category:\n{housing['income_cat'].value_counts()/len(housing)}\n")
+    #print(f'test_set head:\n{test_set.head()}\n')
+
+    ##display histogram
+    #housing.hist(bins=50, figsize=(15,15))
+    #housing['median_income'].hist()
+    #housing['income_cat'].hist()
+    #print(f'{plt.show()}\n')
+
+    ##show income category train and test set
+    #print(f"income category test set:\n{strat_test_set['income_cat'].value_counts()/len(strat_test_set)}\n")
+    #print(f"income category train set:\n{strat_train_set['income_cat'].value_counts()/len(strat_test_set)}\n")
+
+    ##compare properties
+    #train_set, test_set = train_test_split(housing, test_size=0.2, random_state=42) #add income_cat to test_set and train_set
+    #compare_props = pd.DataFrame({
+    #    'Overall': income_cat_proportions(housing),
+    #    'Stratified': income_cat_proportions(strat_test_set),
+    #    'Random': income_cat_proportions(test_set),
+    #}).sort_index()
+    #compare_props['Rand. %error'] = 100 * compare_props['Random']/compare_props['Overall'] - 100
+    #compare_props['Strat. %error'] = 100 * compare_props['Stratified']/compare_props['Overall'] - 100
+    #print(f'compare stratified sampling and random sampling:\n{compare_props}')
+
+    ##remove income_cat attribute
+    #for set in (strat_train_set, strat_test_set):
+    #    set.drop(['income_cat'], axis=1, inplace=True)
+
+    #housing = strat_train_set.copy() #create a copy of train set
+    ##plotting again
+    #housing.plot(kind='scatter', x='longitude', y='latitude', alpha=0.4,
+    #             s=housing['population']/100, label='population',
+    #             c='median_house_value', cmap=plt.get_cmap('jet'),
+    #             colorbar=True,)
+    #plt.show()
+
+    ##looking for correlations
+    #corr_matrix = housing.corr()
+    #print(corr_matrix['median_house_value'].sort_values(ascending=False))
+
+    ##anoher way looking for correlations
+    #attributes = ['median_house_value', 'median_income', 'total_rooms', 'housing_median_age']
+    #scatter_matrix(housing[attributes], figsize=(12, 8))
+    #housing.plot(kind='scatter', x='median_income', y='median_house_value', alpha=0.1)
+    #plt.show()
+
+    #look at rooms per households and bedrooms per rooms
+    #housing['rooms_per_households'] = housing['total_rooms']/housing['households']
+    #housing['bedrooms_per_rooms'] = housing['total_bedrooms']/housing['total_rooms']
+    #housing['population_per_household'] = housing['population']/housing['households']
+    #corr_matrix = housing.corr()
+    #print(corr_matrix['median_house_value'].sort_values(ascending=False))
+
+def commented_out_2():
+    print('the second commented out line')
+    #print(imputer.statistics_)
+    #print(housing_num.median().values) #using imputer values
+
+    #x = imputer.transform(housing_num) #numpy array
+    #housing_tr = pd.DataFrame(x, columns=housing_num.columns) #put numpy array to dataframe
+
+    #encoder = LabelEncoder()
+    #housing_cat = housing['ocean_proximity']
+    #housing_cat_encoded = encoder.fit_transform(housing_cat)
+    #print(housing_cat_encoded)
+    #print(encoder.classes_) #IH OCEAN is mapped to 0, INLAND is mapped to 1, and so on
+    #onehot = OneHotEncoder()
+    #housing_cat_OH = onehot.fit_transform(housing_cat_encoded.reshape(-1,1))
+    #print(housing_cat_OH)
+
+    #encoder = LabelBinarizer() #from text categories to integer categories then from integer categories to one-hot vectors (default numpy array)
+    #encoder = LabelBinarizer(sparse_output=True) #from text categories to integer categories then from integer categories to one-hot vectors (sparse matrix instead)
+    #housing_cat_OH = encoder.fit_transform(housing_cat)
+    #print(housing_cat_OH)
+
+    #attr_adder_caa = CombinedAttributesAdder(add_bedrooms_per_room=False) #CombinedAttributesAdder
+    #housing_extra_attribs_caa = attr_adder_caa.transform(housing.values)
+    #print(f'default:\n{housing_extra_attribs_caa}\n')
+    #attr_adder_ft = FunctionTransformer(add_extra_features, validate=False, kw_args={"add_bedrooms_per_room":False}) #FunctionTransformer
+    #housing_extra_attribs_ft = attr_adder_ft.fit_transform(housing.values)
+    #print(f'FunctionTransformer:\n{housing_extra_attribs_ft}')
+
+    #housing_extra_attribs = pd.DataFrame(
+    #    housing_extra_attribs_ft,
+    #    columns=list(housing.columns)+["rooms_per_household", "populations_per_household"],
+    #    index=housing.index)
+    #print(housing_extra_attribs.head())
+
+def old_pipeline():
+    print('old pipeline using FeatureUnion')
+    #old_num_pipeline = Pipeline([
+    #    ('selector', OldDataFrameSelector(num_attribs)),
+    #    ('imputer', SimpleImputer(strategy='median')),
+    #    ('attribs_adder', FunctionTransformer(add_extra_features, validate=False)),
+    #    ('std_scaler', StandardScaler()),
+    #])
+
+    #old_cat_pipeline = Pipeline([
+    #    ('selector', OldDataFrameSelector(cat_attribs)),
+    #    ('cat_encoder', OneHotEncoder(sparse=False)),
+    #])
+
+    #old_full_pipeline = FeatureUnion([
+    #    ('num_pipeline', old_num_pipeline),
+    #    ('cat_pipeline', old_cat_pipeline),
+    #])
+
+    #old_housing_prepared = old_full_pipeline.fit_transform(housing)
+    #print(f'FeatureUnion pipeline:\n{old_housing_prepared}\n')
+
 
 class CombinedAttributesAdder(BaseEstimator, TransformerMixin):
     def __init__(self, add_bedrooms_per_room=True):
