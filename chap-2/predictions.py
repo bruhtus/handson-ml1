@@ -88,22 +88,21 @@ def main(data):
     #linear_regression(new_housing_prepared, housing_labels, housing)
     #svm(new_housing_prepared, housing_labels)
 
+    #gridsearchcv_random_forest(new_housing_prepared, housing_labels)
+
+def gridsearchcv_random_forest(pipeline, housing_labels):
     param_grid = [
         {'n_estimators': [3, 10, 30], 'max_features': [2, 4, 6, 8]}, #try 3*4 (12) combination of hyperparameters
         {'bootstrap': [False], 'n_estimators': [3, 10], 'max_features': [2, 3, 4]} #and then try 2*3 (6) combination with bootstrap set as False
     ]
-
     forest_reg = RandomForestRegressor(random_state=42)
     grid_search = GridSearchCV(forest_reg, param_grid, cv=5, scoring='neg_mean_squared_error', return_train_score=True) #train across 5 folds, total of (12+6)*5=90 rounds of training
-    grid_search.fit(new_housing_prepared, housing_labels)
-
+    grid_search.fit(pipeline, housing_labels)
     #print(f'Random Forest Best Params: {grid_search.best_params_}\n')
     #print(grid_search.best_estimator_)
-
     #cvres = grid_search.cv_results_
     #for mean_score, params in zip(cvres['mean_test_score'], cvres['params']):
     #    print(np.sqrt(-mean_score), params)
-
     #print('\t')
     #print(pd.DataFrame(grid_search.cv_results_))
 
@@ -305,7 +304,6 @@ def old_pipeline():
 
     #old_housing_prepared = old_full_pipeline.fit_transform(housing)
     #print(f'FeatureUnion pipeline:\n{old_housing_prepared}\n')
-
 
 class CombinedAttributesAdder(BaseEstimator, TransformerMixin):
     def __init__(self, add_bedrooms_per_room=True):
