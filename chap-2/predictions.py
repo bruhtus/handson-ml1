@@ -6,6 +6,7 @@ import pandas as pd
 #import matplotlib.pyplot as plt
 
 from fire import Fire
+from scipy.stats import randint
 
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer #to replace missing values
@@ -22,6 +23,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import StandardScaler
@@ -88,9 +90,10 @@ def main(data):
     #linear_regression(new_housing_prepared, housing_labels, housing)
     #svm(new_housing_prepared, housing_labels)
 
-    #gridsearchcv_random_forest(new_housing_prepared, housing_labels)
+    #gridsearchcv_random_forest(new_housing_prepared, housing_labels, num_attribs, new_full_pipeline)
+    #randomizedsearchcv_random_forest(new_housing_prepared, housing_labels)
 
-def gridsearchcv_random_forest(pipeline, housing_labels):
+def gridsearchcv_random_forest(pipeline, housing_labels, num_attribs, full_pipeline):
     param_grid = [
         {'n_estimators': [3, 10, 30], 'max_features': [2, 4, 6, 8]}, #try 3*4 (12) combination of hyperparameters
         {'bootstrap': [False], 'n_estimators': [3, 10], 'max_features': [2, 3, 4]} #and then try 2*3 (6) combination with bootstrap set as False
@@ -105,6 +108,27 @@ def gridsearchcv_random_forest(pipeline, housing_labels):
     #    print(np.sqrt(-mean_score), params)
     #print('\t')
     #print(pd.DataFrame(grid_search.cv_results_))
+
+    #feature_importances = grid_search.best_estimator_.feature_importances_
+    #extra_attribs = ['rooms_per_hhold', 'pop_per_hhold', 'bedrooms_per_room']
+    #cat_encoder = full_pipeline.named_transformers_['cat']
+    #cat_one_hot_attribs = list(cat_encoder.categories_[0])
+    #attributes = num_attribs + extra_attribs + cat_one_hot_attribs
+    #print(sorted(zip(feature_importances, attributes), reverse=True))
+
+def randomizedsearchcv_random_forest(pipeline, housing_labels):
+    param_distribs = {
+        'n_estimators': randint(low=1, high=200),
+        'max_features': randint(low=1, high=8),
+    }
+    forest_reg = RandomForestRegressor(random_state=42)
+    rnd_search = RandomizedSearchCV(forest_reg, param_distributions=param_distribs,
+                                    n_iter=10, cv=5, scoring='neg_mean_squared_error',
+                                    random_state=42)
+    rnd_search.fit(pipeline, housing_labels)
+    cvres = rnd_search.cv_results_
+    for mean_score, params in zip(cvres['mean_test_score'], cvres['params']):
+        print(np.sqrt(-mean_score), params)
 
 def random_forest(pipeline, housing_labels):
     forest_reg = RandomForestRegressor(n_estimators=10, random_state=42)
