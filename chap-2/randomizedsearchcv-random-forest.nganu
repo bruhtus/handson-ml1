@@ -1,0 +1,10 @@
+49931.87687086762 {'max_features': 7, 'n_estimators': 180}
+52122.359500383354 {'max_features': 5, 'n_estimators': 15}
+51463.975706036916 {'max_features': 3, 'n_estimators': 72}
+51381.480933769904 {'max_features': 5, 'n_estimators': 21}
+50040.68374785571 {'max_features': 7, 'n_estimators': 122}
+51436.83595589131 {'max_features': 3, 'n_estimators': 75}
+51286.420458183085 {'max_features': 3, 'n_estimators': 88}
+50312.65330988299 {'max_features': 5, 'n_estimators': 100}
+50995.48957108733 {'max_features': 3, 'n_estimators': 150}
+65455.451908645155 {'max_features': 5, 'n_estimators': 2}
