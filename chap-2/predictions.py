@@ -101,22 +101,22 @@ def gridsearchcv_random_forest(pipeline, housing_labels, num_attribs, full_pipel
     forest_reg = RandomForestRegressor(random_state=42)
     grid_search = GridSearchCV(forest_reg, param_grid, cv=5, scoring='neg_mean_squared_error', return_train_score=True) #train across 5 folds, total of (12+6)*5=90 rounds of training
     grid_search.fit(pipeline, housing_labels)
-    #print(f'Random Forest Best Params: {grid_search.best_params_}\n')
-    #print(grid_search.best_estimator_)
-    #cvres = grid_search.cv_results_
-    #for mean_score, params in zip(cvres['mean_test_score'], cvres['params']):
-    #    print(np.sqrt(-mean_score), params)
-    #print('\t')
-    #print(pd.DataFrame(grid_search.cv_results_))
+    print(f'Random Forest Best Params: {grid_search.best_params_}\n')
+    print(grid_search.best_estimator_)
+    cvres = grid_search.cv_results_
+    for mean_score, params in zip(cvres['mean_test_score'], cvres['params']):
+        print(np.sqrt(-mean_score), params)
+    print('\t')
+    print(pd.DataFrame(grid_search.cv_results_))
 
-    #feature_importances = grid_search.best_estimator_.feature_importances_
-    #extra_attribs = ['rooms_per_hhold', 'pop_per_hhold', 'bedrooms_per_room']
-    #cat_encoder = full_pipeline.named_transformers_['cat']
-    #cat_one_hot_attribs = list(cat_encoder.categories_[0])
-    #attributes = num_attribs + extra_attribs + cat_one_hot_attribs
-    #print(sorted(zip(feature_importances, attributes), reverse=True))
+    feature_importances = grid_search.best_estimator_.feature_importances_
+    extra_attribs = ['rooms_per_hhold', 'pop_per_hhold', 'bedrooms_per_room']
+    cat_encoder = full_pipeline.named_transformers_['cat']
+    cat_one_hot_attribs = list(cat_encoder.categories_[0])
+    attributes = num_attribs + extra_attribs + cat_one_hot_attribs
+    print(sorted(zip(feature_importances, attributes), reverse=True))
 
-def randomizedsearchcv_random_forest(pipeline, housing_labels):
+def andomizedsearchcv_random_forest(pipeline, housing_labels):
     param_distribs = {
         'n_estimators': randint(low=1, high=200),
         'max_features': randint(low=1, high=8),
