@@ -90,7 +90,7 @@ def main(data):
     #linear_regression(new_housing_prepared, housing_labels, housing)
     #svm(new_housing_prepared, housing_labels)
 
-    #gridsearchcv_random_forest(new_housing_prepared, housing_labels, num_attribs, new_full_pipeline)
+    gridsearchcv_random_forest(new_housing_prepared, housing_labels, num_attribs, new_full_pipeline)
     #randomizedsearchcv_random_forest(new_housing_prepared, housing_labels)
 
 def gridsearchcv_random_forest(pipeline, housing_labels, num_attribs, full_pipeline):
