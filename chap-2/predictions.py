@@ -138,7 +138,7 @@ def fm_gridsearch_random_forest(pipeline, housing_labels, num_attribs, full_pipe
 
     final_mse = mean_squared_error(y_test, final_predictions)
     final_rmse = np.sqrt(final_mse)
-    print(f'Final prediction: {final_rmse}')
+    print(f'Final prediction random forest: {final_rmse}')
 
 def randomizedsearchcv_random_forest(pipeline, housing_labels):
     param_distribs = {
