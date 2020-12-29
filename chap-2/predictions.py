@@ -90,8 +90,10 @@ def main(data):
     #linear_regression(new_housing_prepared, housing_labels, housing)
     #svm(new_housing_prepared, housing_labels)
 
-    gridsearchcv_random_forest(new_housing_prepared, housing_labels, num_attribs, new_full_pipeline)
+    #gridsearchcv_random_forest(new_housing_prepared, housing_labels, num_attribs, new_full_pipeline)
     #randomizedsearchcv_random_forest(new_housing_prepared, housing_labels)
+
+    fm_gridsearch_random_forest(new_housing_prepared, housing_labels, num_attribs, new_full_pipeline, strat_test_set)
 
 def gridsearchcv_random_forest(pipeline, housing_labels, num_attribs, full_pipeline):
     param_grid = [
@@ -101,22 +103,44 @@ def gridsearchcv_random_forest(pipeline, housing_labels, num_attribs, full_pipel
     forest_reg = RandomForestRegressor(random_state=42)
     grid_search = GridSearchCV(forest_reg, param_grid, cv=5, scoring='neg_mean_squared_error', return_train_score=True) #train across 5 folds, total of (12+6)*5=90 rounds of training
     grid_search.fit(pipeline, housing_labels)
-    print(f'Random Forest Best Params: {grid_search.best_params_}\n')
-    print(grid_search.best_estimator_)
-    cvres = grid_search.cv_results_
-    for mean_score, params in zip(cvres['mean_test_score'], cvres['params']):
-        print(np.sqrt(-mean_score), params)
-    print('\t')
-    print(pd.DataFrame(grid_search.cv_results_))
+    #print(f'Random Forest Best Params: {grid_search.best_params_}\n')
+    #print(grid_search.best_estimator_)
+    #cvres = grid_search.cv_results_
+    #for mean_score, params in zip(cvres['mean_test_score'], cvres['params']):
+    #    print(np.sqrt(-mean_score), params)
+    #print('\t')
+    #print(pd.DataFrame(grid_search.cv_results_))
 
-    feature_importances = grid_search.best_estimator_.feature_importances_
-    extra_attribs = ['rooms_per_hhold', 'pop_per_hhold', 'bedrooms_per_room']
-    cat_encoder = full_pipeline.named_transformers_['cat']
-    cat_one_hot_attribs = list(cat_encoder.categories_[0])
-    attributes = num_attribs + extra_attribs + cat_one_hot_attribs
-    print(sorted(zip(feature_importances, attributes), reverse=True))
+    #feature_importances = grid_search.best_estimator_.feature_importances_
+    #extra_attribs = ['rooms_per_hhold', 'pop_per_hhold', 'bedrooms_per_room']
+    #cat_encoder = full_pipeline.named_transformers_['cat']
+    #cat_one_hot_attribs = list(cat_encoder.categories_[0])
+    #attributes = num_attribs + extra_attribs + cat_one_hot_attribs
+    #print(sorted(zip(feature_importances, attributes), reverse=True))
 
-def andomizedsearchcv_random_forest(pipeline, housing_labels):
+def fm_gridsearch_random_forest(pipeline, housing_labels, num_attribs, full_pipeline, strat_test_set): #final model gridsearch random forest
+    param_grid = [
+        {'n_estimators': [3, 10, 30], 'max_features': [2, 4, 6, 8]}, #try 3*4 (12) combination of hyperparameters
+        {'bootstrap': [False], 'n_estimators': [3, 10], 'max_features': [2, 3, 4]} #and then try 2*3 (6) combination with bootstrap set as False
+    ]
+    forest_reg = RandomForestRegressor(random_state=42)
+    grid_search = GridSearchCV(forest_reg, param_grid, cv=5, scoring='neg_mean_squared_error', return_train_score=True) #train across 5 folds, total of (12+6)*5=90 rounds of training
+    grid_search.fit(pipeline, housing_labels)
+
+    final_model = grid_search.best_estimator_
+
+    X_test = strat_test_set.drop('median_house_value', axis=1)
+    y_test = strat_test_set['median_house_value'].copy()
+
+    X_test_prepared = full_pipeline.transform(X_test)
+
+    final_predictions = final_model.predict(X_test_prepared)
+
+    final_mse = mean_squared_error(y_test, final_predictions)
+    final_rmse = np.sqrt(final_mse)
+    print(f'Final prediction: {final_rmse}')
+
+def randomizedsearchcv_random_forest(pipeline, housing_labels):
     param_distribs = {
         'n_estimators': randint(low=1, high=200),
         'max_features': randint(low=1, high=8),
