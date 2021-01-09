@@ -1,11 +1,15 @@
 import hashlib
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('module://drawilleplot')
+import matplotlib.pyplot as plt
 
 from fire import Fire
 
 from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import StratifiedShuffleSplit
 
 def main(data):
     pd.set_option('display.max_columns', None)
@@ -22,8 +26,29 @@ def main(data):
     housing['income_cat'] = pd.cut(housing['median_income'],
                                    bins=[0., 1.5, 3.0, 4.5, 6., np.inf],
                                    labels=[1, 2, 3, 4, 5])
-    print(f'Count income categories:\n{housing["income_cat"].value_counts()}')
-                                           
+
+    split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
+    for train_index, test_index in split.split(housing, housing['income_cat']):
+        strat_train_set = housing.loc[train_index]
+        strat_test_set = housing.loc[test_index]
+
+    #print(f'Income categories proportions full housing dataset:\n{income_cat_proportions(housing)}\n')
+    #print(f'Stratum train set income categories proportions:\n{income_cat_proportions(strat_train_set)}\n')
+    #print(f'Stratum test set income categories proportions:\n{income_cat_proportions(strat_test_set)}\n')
+
+    compare_props = pd.DataFrame({
+        'Overall': income_cat_proportions(housing),
+        'Stratified': income_cat_proportions(strat_test_set),
+        'Random': income_cat_proportions(test_set),
+    }).sort_index()
+
+    compare_props['Rand. %error'] = 100 + compare_props['Random']/compare_props['Overall'] - 100
+    compare_props['Strat. %error'] = 100 + compare_props['Stratified']/compare_props['Overall'] - 100
+
+    print(compare_props)
+
+def income_cat_proportions(data):
+    return data['income_cat'].value_counts()/len(data)
 
 if __name__ == '__main__':
     Fire(main)
