@@ -1,0 +1,6 @@
+matplotlib
+numpy
+pandas
+fire
+scikit_learn
+drawilleplot
