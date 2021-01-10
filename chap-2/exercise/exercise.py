@@ -34,6 +34,24 @@ def main(data):
     #print(f'Stratum test set income categories proportions:\n{income_cat_proportions(strat_test_set)}\n')
 
     train_set, test_set = train_test_split(housing, test_size=0.2, random_state=42) #add income_cat to test_set and train_set
+    #compare_props(housing, strat_test_set, test_set)
+
+    housing_strat_train = strat_train_set.copy()
+    #housing_strat_train_plot_alpha(housing_strat_train)
+    #housing_strat_train_plot_cmap(housing_strat_train)
+
+def housing_strat_train_plot_alpha(housing_strat_train):
+    housing_strat_train.plot(kind='scatter', x='longitude', y='latitude')
+    housing_strat_train.plot(kind='scatter', x='longitude', y='latitude', alpha=0.1)
+    plt.show()
+
+def housing_strat_train_plot_cmap(housing_strat_train):
+    housing_strat_train.plot(kind='scatter', x='longitude', y='latitude', alpha=0.4,
+                             s=housing_strat_train['population']/100, label='population', figsize=(10,7),
+                             c='median_house_value', cmap=plt.get_cmap('jet'), colorbar=True)
+    plt.show()
+
+def compare_props(housing, strat_test_set, test_set):
     compare_props = pd.DataFrame({
         'Overall': income_cat_proportions(housing),
         'Stratified': income_cat_proportions(strat_test_set),
