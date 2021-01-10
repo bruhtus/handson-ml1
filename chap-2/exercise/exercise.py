@@ -14,9 +14,6 @@ from sklearn.model_selection import StratifiedShuffleSplit
 def main(data):
     pd.set_option('display.max_columns', None)
     housing = pd.read_csv(data)
-    train_set, test_set = train_test_split(housing, test_size=0.2, random_state=42)
-    #print(f'train set:\n{train_set}\n')
-    #print(f'test set:\n{test_set}\n')
 
     #divide median_income by 1.5 to limit income categories
     housing['income_cat'] = np.ceil(housing['median_income']/1.5)
@@ -36,16 +33,15 @@ def main(data):
     #print(f'Stratum train set income categories proportions:\n{income_cat_proportions(strat_train_set)}\n')
     #print(f'Stratum test set income categories proportions:\n{income_cat_proportions(strat_test_set)}\n')
 
+    train_set, test_set = train_test_split(housing, test_size=0.2, random_state=42) #add income_cat to test_set and train_set
     compare_props = pd.DataFrame({
         'Overall': income_cat_proportions(housing),
         'Stratified': income_cat_proportions(strat_test_set),
         'Random': income_cat_proportions(test_set),
     }).sort_index()
-
-    compare_props['Rand. %error'] = 100 + compare_props['Random']/compare_props['Overall'] - 100
-    compare_props['Strat. %error'] = 100 + compare_props['Stratified']/compare_props['Overall'] - 100
-
-    print(compare_props)
+    compare_props['Rand. %error'] = 100 * compare_props['Random']/compare_props['Overall'] - 100
+    compare_props['Strat. %error'] = 100 * compare_props['Stratified']/compare_props['Overall'] - 100
+    print(f'Compare stratified sampling and random sampling:\n{compare_props}')
 
 def income_cat_proportions(data):
     return data['income_cat'].value_counts()/len(data)
