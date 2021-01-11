@@ -29,16 +29,19 @@ For example: <br>
 The district prices that your system outputs are going to be fed into a downstream Machine learning system and we assume that these prices are going to be used as such. <br>
 But, what if the downstream system actually converts the prices into categories (e.g., "cheap", "medium", "expensive") and then using those categories instead of the prices themselves? In that case, getting the price perfectly right is not important at all. Your system just need to get the category right. If that the case, then the problem should have been framed as classification task and not regression task.
 
-- The correlation coefficient ranges from -1 to 1. Here's correlation between median house value with each attributes: <br>
-median_house_value    1.000000 <br>
-median_income         0.687160 <br>
-total_rooms           0.135097 <br>
-housing_median_age    0.114110 <br>
-households            0.064506 <br>
-total_bedrooms        0.047689 <br>
-population           -0.026920 <br>
-longitude            -0.047432 <br>
-latitude             -0.142724 <br>
+- The correlation coefficient ranges from -1 to 1. Here's correlation between median house value with each attributes:
+
+Attributes | Correlation
+--- | ---
+median_house_value |    1.000000
+median_income |         0.687160
+total_rooms |           0.135097
+housing_median_age |    0.114110
+households |            0.064506
+total_bedrooms |        0.047689
+population |           -0.026920
+longitude |            -0.047432
+latitude |             -0.142724
 
   - When it is close to 1, it means that there is a strong positive correlation, for example: <br>
     The median house value tends to go up when the median income goes up. <br>
