@@ -2,7 +2,7 @@ import hashlib
 import numpy as np
 import pandas as pd
 import matplotlib
-matplotlib.use('module://drawilleplot')
+#matplotlib.use('module://drawilleplot')
 import matplotlib.pyplot as plt
 
 from fire import Fire
@@ -39,15 +39,20 @@ def main(data):
     housing_strat_train = strat_train_set.copy()
     #housing_strat_train_plot_alpha(housing_strat_train)
     #housing_strat_train_plot_cmap(housing_strat_train)
+    #correlations(housing_strat_train)
 
-def housing_strat_train_plot_alpha(housing_strat_train):
-    housing_strat_train.plot(kind='scatter', x='longitude', y='latitude')
-    housing_strat_train.plot(kind='scatter', x='longitude', y='latitude', alpha=0.1)
+def correlations(housing):
+    corr_matrix = housing.corr()
+    print(corr_matrix['median_house_value'].sort_values(ascending=False))
+
+def housing_strat_train_plot_alpha(housing):
+    #housing.plot(kind='scatter', x='longitude', y='latitude')
+    housing.plot(kind='scatter', x='longitude', y='latitude', alpha=0.1)
     plt.show()
 
-def housing_strat_train_plot_cmap(housing_strat_train):
-    housing_strat_train.plot(kind='scatter', x='longitude', y='latitude', alpha=0.4,
-                             s=housing_strat_train['population']/100, label='population', figsize=(10,7),
+def housing_strat_train_plot_cmap(housing):
+    housing.plot(kind='scatter', x='longitude', y='latitude', alpha=0.4,
+                             s=housing['population']/100, label='population', figsize=(10,7),
                              c='median_house_value', cmap=plt.get_cmap('jet'), colorbar=True)
     plt.show()
 
