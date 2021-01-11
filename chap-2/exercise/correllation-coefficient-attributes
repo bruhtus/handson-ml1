@@ -1,0 +1,10 @@
+median_house_value    1.000000
+median_income         0.687160
+total_rooms           0.135097
+housing_median_age    0.114110
+households            0.064506
+total_bedrooms        0.047689
+population           -0.026920
+longitude            -0.047432
+latitude             -0.142724
+Name: median_house_value, dtype: float64
