@@ -41,18 +41,21 @@ def main(data):
     #housing_strat_train_plot_alpha(housing_strat_train)
     #housing_strat_train_plot_cmap(housing_strat_train)
     #correlations(housing_strat_train)
-    #scatter_plot(housing_strat_train)
+    #scatter_plot(housing_strat_train, 'median_income', 'median_house_value', 0.1)
 
     #look correlations rooms per household, bedrooms per room, and population per household
     housing_strat_train['rooms_per_household'] = housing_strat_train['total_rooms']/housing_strat_train['households']
     housing_strat_train['bedrooms_per_room'] = housing_strat_train['total_bedrooms']/housing_strat_train['total_rooms']
     housing_strat_train['population_per_household'] = housing_strat_train['population']/housing_strat_train['households']
-    correlations(housing_strat_train)
+    #correlations(housing_strat_train)
+    #scatter_plot(housing_strat_train, 'rooms_per_household', 'median_house_value', 0.2)
+    print(housing_strat_train.describe())
 
-def scatter_plot(housing):
-    attributes = ['median_house_value', 'median_income', 'total_rooms', 'housing_median_age']
+def scatter_plot(housing, x_axis, y_axis, alpha_value):
+    #attributes = ['median_house_value', 'median_income', 'total_rooms', 'housing_median_age']
     #scatter_matrix(housing[attributes], figsize=(12,8))
-    housing.plot(kind='scatter', x='median_income', y='median_house_value', alpha=0.1)
+    housing.plot(kind='scatter', x=x_axis, y=y_axis, alpha=alpha_value)
+    #plt.axis([0, 5, 0, 520000])
     plt.show()
 
 def correlations(housing):
