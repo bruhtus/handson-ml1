@@ -11,6 +11,7 @@ from pandas.plotting import scatter_matrix
 from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.impute import SimpleImputer
 
 def main(data):
     pd.set_option('display.max_columns', None)
@@ -58,10 +59,16 @@ def main(data):
     housing_strat_train = strat_train_set.drop('median_house_value', axis=1) #remove median house value
     housing_labels = strat_train_set['median_house_value'].copy() #use median house value as the target/label for training
     sample_incomplete_rows = housing_strat_train[housing.isnull().any(axis=1)].head()
-    print(f'Before:\n{sample_incomplete_rows}\n')
     median = housing['total_bedrooms'].median()
     sample_incomplete_rows['total_bedrooms'].fillna(median, inplace=True)
-    print(f'After:\n{sample_incomplete_rows}\n')
+
+    imputer = SimpleImputer(strategy='median')
+    housing_strat_train_num = housing_strat_train.drop('ocean_proximity', axis=1) #remove text attributes because median can only calculated on numerical attributes
+    imputer.fit(housing_strat_train_num)
+
+    #check if imputer.statistics_ the same as manually computing the median of each attributes
+    print(f'imputer.statistics_:\n{imputer.statistics_}\n')
+    print(f'median of each attributes:\n{housing_strat_train_num.median().values}')
 
 def scatter_plot(housing, x_axis, y_axis, alpha_value):
     #attributes = ['median_house_value', 'median_income', 'total_rooms', 'housing_median_age']
