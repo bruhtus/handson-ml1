@@ -59,7 +59,8 @@ def main(data):
     housing_labels = strat_train_set['median_house_value'].copy() #use median house value as the target/label for training
     sample_incomplete_rows = housing_strat_train[housing.isnull().any(axis=1)].head()
     print(f'Before:\n{sample_incomplete_rows}\n')
-    sample_incomplete_rows.drop('total_bedrooms', axis=1, inplace=True)
+    median = housing['total_bedrooms'].median()
+    sample_incomplete_rows['total_bedrooms'].fillna(median, inplace=True)
     print(f'After:\n{sample_incomplete_rows}\n')
 
 def scatter_plot(housing, x_axis, y_axis, alpha_value):
