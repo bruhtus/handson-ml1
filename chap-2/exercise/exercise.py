@@ -6,6 +6,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 from fire import Fire
+from pandas.plotting import scatter_matrix
 
 from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split
@@ -40,6 +41,13 @@ def main(data):
     #housing_strat_train_plot_alpha(housing_strat_train)
     #housing_strat_train_plot_cmap(housing_strat_train)
     #correlations(housing_strat_train)
+    #scatter_plot(housing_strat_train)
+
+def scatter_plot(housing):
+    attributes = ['median_house_value', 'median_income', 'total_rooms', 'housing_median_age']
+    #scatter_matrix(housing[attributes], figsize=(12,8))
+    housing.plot(kind='scatter', x='median_income', y='median_house_value', alpha=0.1)
+    plt.show()
 
 def correlations(housing):
     corr_matrix = housing.corr()
