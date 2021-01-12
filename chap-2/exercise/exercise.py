@@ -57,6 +57,8 @@ def main(data):
     #prepare data for machine learning
     housing_strat_train = strat_train_set.drop('median_house_value', axis=1) #remove median house value
     housing_labels = strat_train_set['median_house_value'].copy() #use median house value as the target/label for training
+    sample_incomplete_rows = housing_strat_train[housing.isnull().any(axis=1)].head()
+    print(sample_incomplete_rows)
 
 def scatter_plot(housing, x_axis, y_axis, alpha_value):
     #attributes = ['median_house_value', 'median_income', 'total_rooms', 'housing_median_age']
