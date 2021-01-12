@@ -37,6 +37,9 @@ def main(data):
     train_set, test_set = train_test_split(housing, test_size=0.2, random_state=42) #add income_cat to test_set and train_set
     #compare_props(housing, strat_test_set, test_set)
 
+    for set_ in(strat_train_set, strat_test_set):
+        set_.drop('income_cat', axis=1, inplace=True) #remove income categories
+
     housing_strat_train = strat_train_set.copy()
     #housing_strat_train_plot_alpha(housing_strat_train)
     #housing_strat_train_plot_cmap(housing_strat_train)
@@ -49,7 +52,7 @@ def main(data):
     housing_strat_train['population_per_household'] = housing_strat_train['population']/housing_strat_train['households']
     #correlations(housing_strat_train)
     #scatter_plot(housing_strat_train, 'rooms_per_household', 'median_house_value', 0.2)
-    print(housing_strat_train.describe())
+    #print(housing_strat_train.describe()) #print descriptive statistics train set
 
 def scatter_plot(housing, x_axis, y_axis, alpha_value):
     #attributes = ['median_house_value', 'median_income', 'total_rooms', 'housing_median_age']
