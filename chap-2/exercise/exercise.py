@@ -43,6 +43,12 @@ def main(data):
     #correlations(housing_strat_train)
     #scatter_plot(housing_strat_train)
 
+    #look correlations rooms per household, bedrooms per room, and population per household
+    housing_strat_train['rooms_per_household'] = housing_strat_train['total_rooms']/housing_strat_train['households']
+    housing_strat_train['bedrooms_per_room'] = housing_strat_train['total_bedrooms']/housing_strat_train['total_rooms']
+    housing_strat_train['population_per_household'] = housing_strat_train['population']/housing_strat_train['households']
+    correlations(housing_strat_train)
+
 def scatter_plot(housing):
     attributes = ['median_house_value', 'median_income', 'total_rooms', 'housing_median_age']
     #scatter_matrix(housing[attributes], figsize=(12,8))
