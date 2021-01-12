@@ -1,0 +1,13 @@
+       longitude  latitude  housing_median_age  total_rooms  total_bedrooms  \
+4629     -118.30     34.07                18.0       3759.0             NaN   
+6068     -117.86     34.01                16.0       4632.0             NaN   
+17923    -121.97     37.35                30.0       1955.0             NaN   
+13656    -117.30     34.05                 6.0       2155.0             NaN   
+19252    -122.79     38.48                 7.0       6837.0             NaN   
+
+       population  households  median_income ocean_proximity  
+4629       3296.0      1462.0         2.2708       <1H OCEAN  
+6068       3038.0       727.0         5.1762       <1H OCEAN  
+17923       999.0       386.0         4.6328       <1H OCEAN  
+13656      1039.0       391.0         1.6675          INLAND  
+19252      3468.0      1405.0         3.1662       <1H OCEAN  
