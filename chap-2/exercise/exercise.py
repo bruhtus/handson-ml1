@@ -12,6 +12,7 @@ from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import OrdinalEncoder
 
 def main(data):
     pd.set_option('display.max_columns', None)
@@ -73,7 +74,15 @@ def main(data):
     #transform the training set
     X = imputer.transform(housing_strat_train_num)
     housing_strat_train_tr = pd.DataFrame(X, columns=housing_strat_train_num.columns, index=housing_strat_train_num.index) #tr = transform
-    print(housing_strat_train_tr.head())
+    #print(housing_strat_train_tr.head())
+
+    #preprocess the categorical input feature, ocean_proximity
+    housing_strat_train_cat = housing_strat_train[['ocean_proximity']] #the difference between [] and [[]] is that [[]] remove Name and dtype at the bottom
+    print(f'{housing_strat_train_cat.head(10)}\n')
+    ordinal_encoder = OrdinalEncoder()
+    housing_strat_train_cat_encoded = ordinal_encoder.fit_transform(housing_strat_train_cat)
+    print(f'Ocean proximity encoded:\n{housing_strat_train_cat_encoded[:10]}\n')
+    print(f'Encoder categories:\n{ordinal_encoder.categories_}')
 
 def scatter_plot(housing, x_axis, y_axis, alpha_value):
     #attributes = ['median_house_value', 'median_income', 'total_rooms', 'housing_median_age']

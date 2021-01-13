@@ -1,0 +1,27 @@
+      ocean_proximity
+17606       <1H OCEAN
+18632       <1H OCEAN
+14650      NEAR OCEAN
+3230           INLAND
+3555        <1H OCEAN
+19480          INLAND
+8879        <1H OCEAN
+13685          INLAND
+4937        <1H OCEAN
+4861        <1H OCEAN
+
+Ocean proximity encoded:
+[[0.]
+ [0.]
+ [4.]
+ [1.]
+ [0.]
+ [1.]
+ [0.]
+ [1.]
+ [0.]
+ [0.]]
+
+Encoder categories:
+[array(['<1H OCEAN', 'INLAND', 'ISLAND', 'NEAR BAY', 'NEAR OCEAN'],
+      dtype=object)]
