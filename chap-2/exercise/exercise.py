@@ -67,8 +67,13 @@ def main(data):
     imputer.fit(housing_strat_train_num)
 
     #check if imputer.statistics_ the same as manually computing the median of each attributes
-    print(f'imputer.statistics_:\n{imputer.statistics_}\n')
-    print(f'median of each attributes:\n{housing_strat_train_num.median().values}')
+    #print(f'imputer.statistics_:\n{imputer.statistics_}\n')
+    #print(f'median of each attributes:\n{housing_strat_train_num.median().values}')
+
+    #transform the training set
+    X = imputer.transform(housing_strat_train_num)
+    housing_strat_train_tr = pd.DataFrame(X, columns=housing_strat_train_num.columns, index=housing_strat_train_num.index) #tr = transform
+    print(housing_strat_train_tr.head())
 
 def scatter_plot(housing, x_axis, y_axis, alpha_value):
     #attributes = ['median_house_value', 'median_income', 'total_rooms', 'housing_median_age']
