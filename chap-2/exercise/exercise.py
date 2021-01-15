@@ -84,9 +84,10 @@ def main(data):
     housing_strat_train_cat_encoded = ordinal_encoder.fit_transform(housing_strat_train_cat)
     #print(f'Ocean proximity encoded:\n{housing_strat_train_cat_encoded[:10]}\n')
     #print(f'Encoder categories:\n{ordinal_encoder.categories_}')
-    cat_encoder = OneHotEncoder(sparse=False)
+    cat_encoder = OneHotEncoder(sparse=False) #convert to dense array
     housing_strat_train_cat_onehot = cat_encoder.fit_transform(housing_strat_train_cat)
-    print(housing_strat_train_cat_onehot)
+    print(f'Array:\n{housing_strat_train_cat_onehot}\n')
+    print(f'Categories:\n{cat_encoder.categories_}\n')
 
 def scatter_plot(housing, x_axis, y_axis, alpha_value):
     #attributes = ['median_house_value', 'median_income', 'total_rooms', 'housing_median_age']
