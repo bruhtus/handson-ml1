@@ -9,11 +9,11 @@ from fire import Fire
 from pandas.plotting import scatter_matrix
 
 from sklearn.svm import SVR
-from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.impute import SimpleImputer
 
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import FunctionTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedShuffleSplit
 
@@ -92,8 +92,20 @@ def main(data):
     #print(f'Categories:\n{cat_encoder.categories_}\n')
 
     #Create a custom transformer to add extra attributes
-    attr_adder = CombinedAttributesAdder(add_bedrooms_per_room=False, housing=housing_strat_train)
-    housing_extra_attribs = attr_adder.transform(housing_strat_train.values)
+    attr_adder = FunctionTransformer(add_extra_features, validate=False, kw_args={'add_bedrooms_per_room': False, 'housing': housing_strat_train})
+    housing_extra_attribs = attr_adder.fit_transform(housing_strat_train.values)
+
+def add_extra_features(X, housing, add_bedrooms_per_room=True):
+    rooms_ix, bedrooms_ix, population_ix, household_ix = [list(housing.columns).index(col) for col in ('total_rooms', 'total_bedrooms', 'population', 'households')]
+    rooms_per_household = X[:, rooms_ix] / X[:, household_ix]
+    population_per_household = X[:, population_ix] / X[:, household_ix]
+
+    if add_bedrooms_per_room:
+        bedrooms_per_room = X[:, bedrooms_ix] / X[:, rooms_ix]
+        return np.c_[X, rooms_per_household, population_per_household, bedrooms_per_room]
+
+    else:
+        return np.c_[X, rooms_per_household, population_per_household]
 
 def scatter_plot(housing, x_axis, y_axis, alpha_value):
     #attributes = ['median_house_value', 'median_income', 'total_rooms', 'housing_median_age']
@@ -129,25 +141,6 @@ def compare_props(housing, strat_test_set, test_set):
 
 def income_cat_proportions(data):
     return data['income_cat'].value_counts()/len(data)
-
-class CombinedAttributesAdder(BaseEstimator, TransformerMixin):
-    def __init__(self, housing, add_bedrooms_per_room=True):
-        self.add_bedrooms_per_room = add_bedrooms_per_room
-        self.housing = housing
-    
-    def fit(self, X, y=None):
-        return self
-
-    def transform(self, X, housing, y=None):
-        rooms_ix, bedrooms_ix, population_ix, household_ix = [list(housing.columns).index(col) for col in ('total_rooms', 'total_bedrooms', 'population', 'households')]
-        rooms_per_household = X[:, rooms_ix] / X[:, household_ix]
-        population_per_household = X[:, population_ix] / X[:, household_ix]
-        if self.add_bedrooms_per_room:
-            bedrooms_per_room = X[:, bedrooms_ix] / X[:, rooms_ix]
-            return np.c_[X, rooms_per_household, population_per_household, bedrooms_per_room]
-
-        else:
-            return np.c_[X, rooms_per_household, population_per_household]
 
 if __name__ == '__main__':
     Fire(main)
