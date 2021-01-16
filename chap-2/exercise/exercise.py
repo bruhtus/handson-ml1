@@ -94,7 +94,8 @@ def main(data):
     #Create a custom transformer to add extra attributes
     attr_adder = FunctionTransformer(add_extra_features, validate=False, kw_args={'add_bedrooms_per_room': False, 'housing': housing_strat_train})
     housing_extra_attribs = attr_adder.fit_transform(housing_strat_train.values)
-    housing_extra_attribs = pd.DataFrame(housing_extra_attribs, columns=list(housing_strat_train.columns)+['rooms_per_household', 'population_per_household'], index=housing.index)
+    housing_strat_train_extra_attribs = pd.DataFrame(housing_extra_attribs, columns=list(housing_strat_train.columns)+['rooms_per_household', 'population_per_household'], index=housing_strat_train.index)
+    print(housing_strat_train_extra_attribs.head())
 
 def add_extra_features(X, housing, add_bedrooms_per_room=True):
     rooms_ix, bedrooms_ix, population_ix, household_ix = [list(housing.columns).index(col) for col in ('total_rooms', 'total_bedrooms', 'population', 'households')]
