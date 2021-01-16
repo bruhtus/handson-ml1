@@ -13,6 +13,8 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 
+from sklearn.linear_model import LinearRegression
+
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import FunctionTransformer
@@ -64,7 +66,7 @@ def main(data):
 
     #prepare data for machine learning
     housing_strat_train = strat_train_set.drop('median_house_value', axis=1) #remove median house value
-    housing_labels = strat_train_set['median_house_value'].copy() #use median house value as the target/label for training
+    housing_strat_train_labels = strat_train_set['median_house_value'].copy() #use median house value as the target/label for training
     sample_incomplete_rows = housing_strat_train[housing.isnull().any(axis=1)].head()
     median = housing['total_bedrooms'].median()
     sample_incomplete_rows['total_bedrooms'].fillna(median, inplace=True)
@@ -116,7 +118,17 @@ def main(data):
     ])
 
     housing_strat_train_prepared = full_pipeline.fit_transform(housing_strat_train)
-    print(housing_strat_train_prepared)
+    linear_regression(housing_strat_train, housing_strat_train_prepared, housing_strat_train_labels, full_pipeline)
+
+def linear_regression(housing, housing_prepared, housing_labels, pipeline):
+    lin_reg = LinearRegression()
+    lin_reg.fit(housing_prepared, housing_labels)
+
+    some_data = housing.iloc[:5]
+    some_labels = housing_labels.iloc[:5]
+    some_data_prepared = pipeline.transform(some_data)
+    print(f'Predictions: {lin_reg.predict(some_data_prepared)}\n')
+    print(f'Labels: {list(some_labels)}')
 
 def add_extra_features(X, housing, add_bedrooms_per_room=True):
     rooms_ix, bedrooms_ix, population_ix, household_ix = [list(housing.columns).index(col) for col in ('total_rooms', 'total_bedrooms', 'population', 'households')]
