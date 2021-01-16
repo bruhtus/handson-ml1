@@ -1,0 +1,20 @@
+      longitude latitude housing_median_age total_rooms total_bedrooms  \
+17606   -121.89    37.29                 38        1568            351   
+18632   -121.93    37.05                 14         679            108   
+14650    -117.2    32.77                 31        1952            471   
+3230    -119.61    36.31                 25        1847            371   
+3555    -118.59    34.23                 17        6592           1525   
+
+      population households median_income ocean_proximity rooms_per_household  \
+17606        710        339        2.7042       <1H OCEAN             4.62537   
+18632        306        113        6.4214       <1H OCEAN             6.00885   
+14650        936        462        2.8621      NEAR OCEAN             4.22511   
+3230        1460        353        1.8839          INLAND             5.23229   
+3555        4459       1463        3.0347       <1H OCEAN             4.50581   
+
+      population_per_household  
+17606                   2.0944  
+18632                  2.70796  
+14650                  2.02597  
+3230                   4.13598  
+3555                   3.04785  
