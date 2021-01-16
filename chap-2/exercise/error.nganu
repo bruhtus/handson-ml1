@@ -1,14 +1,31 @@
 exercise.py:65: UserWarning: Boolean Series key will be reindexed to match DataFrame index.
   sample_incomplete_rows = housing_strat_train[housing.isnull().any(axis=1)].head()
 Traceback (most recent call last):
-  File "exercise.py", line 153, in <module>
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/pandas/core/internals/managers.py", line 1665, in create_block_manager_from_blocks
+    mgr = BlockManager(blocks, axes)
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/pandas/core/internals/managers.py", line 149, in __init__
+    self._verify_integrity()
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/pandas/core/internals/managers.py", line 326, in _verify_integrity
+    raise construction_error(tot_items, block.shape[1:], self.axes)
+ValueError: Shape of passed values is (16512, 11), indices imply (20640, 11)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "exercise.py", line 147, in <module>
     Fire(main)
-  File "/usr/local/lib/python3.6/dist-packages/fire/core.py", line 138, in Fire
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/fire/core.py", line 138, in Fire
     component_trace = _Fire(component, args, parsed_flag_args, context, name)
-  File "/usr/local/lib/python3.6/dist-packages/fire/core.py", line 468, in _Fire
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/fire/core.py", line 468, in _Fire
     target=component.__name__)
-  File "/usr/local/lib/python3.6/dist-packages/fire/core.py", line 672, in _CallAndUpdateTrace
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/fire/core.py", line 672, in _CallAndUpdateTrace
     component = fn(*varargs, **kwargs)
-  File "exercise.py", line 96, in main
-    housing_extra_attribs = attr_adder.transform(housing_strat_train.values)
-TypeError: transform() missing 1 required positional argument: 'housing'
+  File "exercise.py", line 97, in main
+    housing_extra_attribs = pd.DataFrame(housing_extra_attribs, columns=list(housing_strat_train.columns)+['rooms_per_household', 'population_per_household'], index=housing.index)
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/pandas/core/frame.py", line 497, in __init__
+    mgr = init_ndarray(data, index, columns, dtype=dtype, copy=copy)
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/pandas/core/internals/construction.py", line 234, in init_ndarray
+    return create_block_manager_from_blocks(block_values, [columns, index])
+  File "/home/bruhtus/miniconda3/envs/handson-ml/lib/python3.7/site-packages/pandas/core/internals/managers.py", line 1672, in create_block_manager_from_blocks
+    raise construction_error(tot_items, blocks[0].shape[1:], axes, e)
+ValueError: Shape of passed values is (16512, 11), indices imply (20640, 11)
