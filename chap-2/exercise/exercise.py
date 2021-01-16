@@ -10,10 +10,13 @@ from pandas.plotting import scatter_matrix
 
 from sklearn.svm import SVR
 from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
 
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import FunctionTransformer
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedShuffleSplit
 
@@ -92,10 +95,28 @@ def main(data):
     #print(f'Categories:\n{cat_encoder.categories_}\n')
 
     #Create a custom transformer to add extra attributes
-    attr_adder = FunctionTransformer(add_extra_features, validate=False, kw_args={'add_bedrooms_per_room': False, 'housing': housing_strat_train})
-    housing_extra_attribs = attr_adder.fit_transform(housing_strat_train.values)
-    housing_strat_train_extra_attribs = pd.DataFrame(housing_extra_attribs, columns=list(housing_strat_train.columns)+['rooms_per_household', 'population_per_household'], index=housing_strat_train.index)
-    print(housing_strat_train_extra_attribs.head())
+    #attr_adder = FunctionTransformer(add_extra_features, validate=False, kw_args={'add_bedrooms_per_room': False, 'housing': housing_strat_train})
+    #housing_extra_attribs = attr_adder.fit_transform(housing_strat_train.values)
+    #housing_strat_train_extra_attribs = pd.DataFrame(housing_extra_attribs, columns=list(housing_strat_train.columns)+['rooms_per_household', 'population_per_household'], index=housing_strat_train.index)
+
+    #build pipeline for preprocessing the numerical attributes
+    num_pipeline = Pipeline([
+        ('imputer', SimpleImputer(strategy='median')),
+        ('attribs_adder', FunctionTransformer(add_extra_features, validate=False, kw_args={'add_bedrooms_per_room': False, 'housing': housing_strat_train})),
+        ('std_scaler', StandardScaler()),
+    ])
+
+    housing_strat_train_num_tr = num_pipeline.fit_transform(housing_strat_train_num)
+    num_attribs = list(housing_strat_train_num)
+    cat_attribs = ['ocean_proximity']
+
+    full_pipeline = ColumnTransformer([
+        ('num', num_pipeline, num_attribs),
+        ('cat', OneHotEncoder(), cat_attribs),
+    ])
+
+    housing_strat_train_prepared = full_pipeline.fit_transform(housing_strat_train)
+    print(housing_strat_train_prepared)
 
 def add_extra_features(X, housing, add_bedrooms_per_room=True):
     rooms_ix, bedrooms_ix, population_ix, household_ix = [list(housing.columns).index(col) for col in ('total_rooms', 'total_bedrooms', 'population', 'households')]
