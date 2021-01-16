@@ -10,6 +10,8 @@ from pandas.plotting import scatter_matrix
 
 from sklearn.svm import SVR
 from sklearn.impute import SimpleImputer
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 
@@ -127,8 +129,13 @@ def linear_regression(housing, housing_prepared, housing_labels, pipeline):
     some_data = housing.iloc[:5]
     some_labels = housing_labels.iloc[:5]
     some_data_prepared = pipeline.transform(some_data)
-    print(f'Predictions: {lin_reg.predict(some_data_prepared)}\n')
-    print(f'Labels: {list(some_labels)}')
+
+    housing_predictions = lin_reg.predict(housing_prepared)
+    lin_mse = mean_squared_error(housing_labels, housing_predictions)
+    lin_rmse = np.sqrt(lin_mse)
+    print(f'linear regression mean_squared_error: {lin_rmse}\n')
+    lin_mse = mean_absolute_error(housing_labels, housing_predictions)
+    print(f'linear regression mean_absolute_error: {lin_rmse}')
 
 def add_extra_features(X, housing, add_bedrooms_per_room=True):
     rooms_ix, bedrooms_ix, population_ix, household_ix = [list(housing.columns).index(col) for col in ('total_rooms', 'total_bedrooms', 'population', 'households')]
