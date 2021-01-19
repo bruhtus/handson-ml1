@@ -10,13 +10,15 @@ from pandas.plotting import scatter_matrix
 
 from sklearn.svm import SVR
 from sklearn.impute import SimpleImputer
-from sklearn.metrics import mean_squared_error
-from sklearn.metrics import mean_absolute_error
-from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import cross_val_score
 
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.linear_model import LinearRegression
 
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import FunctionTransformer
@@ -120,7 +122,9 @@ def main(data):
     ])
 
     housing_strat_train_prepared = full_pipeline.fit_transform(housing_strat_train)
-    linear_regression(housing_strat_train, housing_strat_train_prepared, housing_strat_train_labels, full_pipeline)
+    #linear_regression(housing_strat_train, housing_strat_train_prepared, housing_strat_train_labels, full_pipeline)
+    #decision_tree_regressor(housing_strat_train_prepared, housing_strat_train_labels)
+    compare_scores(housing_strat_train_prepared, housing_strat_train_labels)
 
 def linear_regression(housing, housing_prepared, housing_labels, pipeline):
     lin_reg = LinearRegression()
@@ -136,6 +140,31 @@ def linear_regression(housing, housing_prepared, housing_labels, pipeline):
     print(f'linear regression mean_squared_error: {lin_rmse}\n')
     lin_mse = mean_absolute_error(housing_labels, housing_predictions)
     print(f'linear regression mean_absolute_error: {lin_rmse}')
+
+def decision_tree_regressor(housing_prepared, housing_labels):
+    tree_reg = DecisionTreeRegressor(random_state=42)
+    tree_reg.fit(housing_prepared, housing_labels)
+
+    housing_predictions = tree_reg.predict(housing_prepared)
+    tree_mse = mean_squared_error(housing_labels, housing_predictions)
+    tree_rmse = np.sqrt(tree_mse)
+    print(tree_rmse)
+
+def compare_scores(housing_prepared, housing_labels):
+    lin_reg = LinearRegression()
+    lin_scores = cross_val_score(lin_reg, housing_prepared, housing_labels, scoring='neg_mean_squared_error', cv=10)
+    tree_rmse_scores = np.sqrt(-lin_scores)
+    display_scores('Linear Regressor', tree_rmse_scores)
+
+    tree_reg = DecisionTreeRegressor(random_state=42)
+    tree_scores = cross_val_score(tree_reg, housing_prepared, housing_labels, scoring='neg_mean_squared_error', cv=10)
+    tree_rmse_scores = np.sqrt(-tree_scores)
+    display_scores('Decision Tree Regressor', tree_rmse_scores)
+
+def display_scores(label, scores):
+    print(f'{label} scores:\n{scores}')
+    print(f'{label} mean: {scores.mean()}')
+    print(f'{label} standard deviation: {scores.std()}\n')
 
 def add_extra_features(X, housing, add_bedrooms_per_room=True):
     rooms_ix, bedrooms_ix, population_ix, household_ix = [list(housing.columns).index(col) for col in ('total_rooms', 'total_bedrooms', 'population', 'households')]
