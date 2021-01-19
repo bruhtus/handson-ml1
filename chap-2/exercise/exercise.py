@@ -122,40 +122,19 @@ def main(data):
     ])
 
     housing_strat_train_prepared = full_pipeline.fit_transform(housing_strat_train)
-    #linear_regression(housing_strat_train, housing_strat_train_prepared, housing_strat_train_labels, full_pipeline)
-    #decision_tree_regressor(housing_strat_train_prepared, housing_strat_train_labels)
     compare_scores(housing_strat_train_prepared, housing_strat_train_labels)
 
-def linear_regression(housing, housing_prepared, housing_labels, pipeline):
-    lin_reg = LinearRegression()
-    lin_reg.fit(housing_prepared, housing_labels)
-
-    some_data = housing.iloc[:5]
-    some_labels = housing_labels.iloc[:5]
-    some_data_prepared = pipeline.transform(some_data)
-
-    housing_predictions = lin_reg.predict(housing_prepared)
-    lin_mse = mean_squared_error(housing_labels, housing_predictions)
-    lin_rmse = np.sqrt(lin_mse)
-    print(f'linear regression mean_squared_error: {lin_rmse}\n')
-    lin_mse = mean_absolute_error(housing_labels, housing_predictions)
-    print(f'linear regression mean_absolute_error: {lin_rmse}')
-
-def decision_tree_regressor(housing_prepared, housing_labels):
-    tree_reg = DecisionTreeRegressor(random_state=42)
-    tree_reg.fit(housing_prepared, housing_labels)
-
-    housing_predictions = tree_reg.predict(housing_prepared)
-    tree_mse = mean_squared_error(housing_labels, housing_predictions)
-    tree_rmse = np.sqrt(tree_mse)
-    print(tree_rmse)
-
 def compare_scores(housing_prepared, housing_labels):
+    linear_regression(housing_prepared, housing_labels)
+    decision_tree_regressor(housing_prepared, housing_labels)
+
+def linear_regression(housing_prepared, housing_labels):
     lin_reg = LinearRegression()
     lin_scores = cross_val_score(lin_reg, housing_prepared, housing_labels, scoring='neg_mean_squared_error', cv=10)
     tree_rmse_scores = np.sqrt(-lin_scores)
     display_scores('Linear Regressor', tree_rmse_scores)
 
+def decision_tree_regressor(housing_prepared, housing_labels):
     tree_reg = DecisionTreeRegressor(random_state=42)
     tree_scores = cross_val_score(tree_reg, housing_prepared, housing_labels, scoring='neg_mean_squared_error', cv=10)
     tree_rmse_scores = np.sqrt(-tree_scores)
