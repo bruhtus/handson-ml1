@@ -135,29 +135,29 @@ def random_forest(housing_prepared, housing_labels):
     forest_scores = cross_val_score(forest_reg, housing_prepared, housing_labels, scoring='neg_mean_squared_error', cv=10)
     forest_rmse_scores = np.sqrt(-forest_scores)
     #display_scores('Random Forest Regressor', forest_rmse_scores)
-    display_pd_series('Random Forest Regressor', forest_rmse_scores)
+    display_pandas_series('Random Forest Regressor', forest_rmse_scores)
 
 def linear_regression(housing_prepared, housing_labels):
     lin_reg = LinearRegression()
     lin_scores = cross_val_score(lin_reg, housing_prepared, housing_labels, scoring='neg_mean_squared_error', cv=10)
     tree_rmse_scores = np.sqrt(-lin_scores)
     #display_scores('Linear Regressor', tree_rmse_scores)
-    display_pd_series('Linear Regressor', tree_rmse_scores)
+    display_pandas_series('Linear Regressor', tree_rmse_scores)
 
 def decision_tree_regressor(housing_prepared, housing_labels):
     tree_reg = DecisionTreeRegressor(random_state=42)
     tree_scores = cross_val_score(tree_reg, housing_prepared, housing_labels, scoring='neg_mean_squared_error', cv=10)
     tree_rmse_scores = np.sqrt(-tree_scores)
     #display_scores('Decision Tree Regressor', tree_rmse_scores)
-    display_pd_series('Decision Tree Regressor', tree_rmse_scores)
+    display_pandas_series('Decision Tree Regressor', tree_rmse_scores)
 
 def display_scores(label, scores):
     print(f'{label} scores:\n{scores}')
     print(f'{label} mean: {scores.mean()}')
     print(f'{label} standard deviation: {scores.std()}\n')
 
-def display_pd_series(label, scores):
-    print(f'{label}:\n{pd.Series({scores}).describe()}')
+def display_pandas_series(label, scores):
+    print(f'{label}:\n{pd.Series(scores).describe()}\n')
 
 def add_extra_features(X, housing, add_bedrooms_per_room=True):
     rooms_ix, bedrooms_ix, population_ix, household_ix = [list(housing.columns).index(col) for col in ('total_rooms', 'total_bedrooms', 'population', 'households')]
