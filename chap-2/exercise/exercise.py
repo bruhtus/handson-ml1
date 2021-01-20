@@ -8,12 +8,12 @@ import matplotlib.pyplot as plt
 from fire import Fire
 from pandas.plotting import scatter_matrix
 
-from sklearn.svm import SVR
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import cross_val_score
 
+from sklearn.svm import SVR
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
@@ -129,6 +129,14 @@ def compare_scores(housing_prepared, housing_labels):
     linear_regression(housing_prepared, housing_labels)
     decision_tree_regressor(housing_prepared, housing_labels)
     random_forest(housing_prepared, housing_labels)
+    svm(housing_prepared, housing_labels)
+
+def svm(housing_prepared, housing_labels):
+    svm_reg = SVR(kernel='linear')
+    svm_scores = cross_val_score(svm_reg, housing_prepared, housing_labels, scoring='neg_mean_squared_error', cv=10)
+    svm_rmse_scores = np.sqrt(-svm_scores)
+    #display_scores('Support Vector Machine', svm_rmse_scores)
+    display_pandas_series('Support Vector Machine', svm_rmse_scores)
 
 def random_forest(housing_prepared, housing_labels):
     forest_reg = RandomForestRegressor(n_estimators=10, random_state=42)
