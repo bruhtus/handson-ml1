@@ -12,3 +12,10 @@ Decision Tree Regressor scores:
 Decision Tree Regressor mean: 71131.79522193872
 Decision Tree Regressor standard deviation: 2547.6767025189947
 
+Random Forest Regressor scores:
+[51229.65964557 49107.56965836 53564.59833428 55327.3159345
+ 49896.78065833 56009.32100639 51171.48995202 50117.7606741
+ 54880.65970247 52651.27052852]
+Random Forest Regressor mean: 52395.64260945326
+Random Forest Regressor standard deviation: 2331.5883000253293
+
