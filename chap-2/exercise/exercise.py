@@ -15,6 +15,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.model_selection import cross_val_score
 
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 
 from sklearn.metrics import mean_squared_error
@@ -127,6 +128,13 @@ def main(data):
 def compare_scores(housing_prepared, housing_labels):
     linear_regression(housing_prepared, housing_labels)
     decision_tree_regressor(housing_prepared, housing_labels)
+    random_forest(housing_prepared, housing_labels)
+
+def random_forest(housing_prepared, housing_labels):
+    forest_reg = RandomForestRegressor(n_estimators=10, random_state=42)
+    forest_scores = cross_val_score(forest_reg, housing_prepared, housing_labels, scoring='neg_mean_squared_error', cv=10)
+    forest_rmse_scores = np.sqrt(-forest_scores)
+    display_scores('Random Forest Regressor', forest_rmse_scores)
 
 def linear_regression(housing_prepared, housing_labels):
     lin_reg = LinearRegression()
