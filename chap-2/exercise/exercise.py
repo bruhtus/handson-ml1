@@ -26,6 +26,7 @@ from sklearn.preprocessing import FunctionTransformer
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.model_selection import GridSearchCV
 
 def main(data):
     pd.set_option('display.max_columns', None)
@@ -123,7 +124,21 @@ def main(data):
     ])
 
     housing_strat_train_prepared = full_pipeline.fit_transform(housing_strat_train)
-    compare_scores(housing_strat_train_prepared, housing_strat_train_labels)
+    #compare_scores(housing_strat_train_prepared, housing_strat_train_labels)
+    gridsearchcv_randomforest(housing_strat_train_prepared, housing_strat_train_labels)
+
+def gridsearchcv_randomforest(housing_prepared, housing_labels):
+    param_grid = [
+        {'n_estimators': [3, 10, 30], 'max_features': [2, 4, 6, 8]}, #try 12 (3 (n_estimators) * 4 (max_features)) combinations of hyperparameters
+        {'bootstrap': [False], 'n_estimators': [3, 10], 'max_features': [2, 3, 4]},
+    ]
+
+    forest_reg = RandomForestRegressor(random_state=42)
+    grid_search = GridSearchCV(forest_reg, param_grid, cv=5, scoring='neg_mean_squared_error', return_train_score=True)
+    grid_search.fit(housing_prepared, housing_labels)
+    #print(f'Grid Search CV Best Hyperparameter:\n{grid_search.best_params_}\n')
+    #print(f'Grid Search CV Best Estimator:\n{grid_search.best_estimator_}')
+    print(f'Grid Search CV Results:\n{pd.DataFrame(grid_search.cv_results_)}')
 
 def compare_scores(housing_prepared, housing_labels):
     linear_regression(housing_prepared, housing_labels)
