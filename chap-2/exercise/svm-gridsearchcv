@@ -1,0 +1,2 @@
+SVM Best Score: 70355.10627627862
+SVM Best Hyperparameters: {'C': 30000.0, 'kernel': 'linear'}
