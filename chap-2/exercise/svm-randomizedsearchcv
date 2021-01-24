@@ -1,0 +1,2 @@
+SVM Best Score: 54692.02313796996
+SVM Best Hyperparameters: {'C': 157055.10989448498, 'gamma': 0.26497040005002437, 'kernel': 'rbf'}
