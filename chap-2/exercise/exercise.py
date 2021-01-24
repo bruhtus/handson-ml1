@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 
 from fire import Fire
+from scipy.stats import expon, reciprocal
 from sklearn.svm import SVR
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
@@ -54,9 +55,27 @@ def main(data):
     ])
 
     housing_strat_train_prepared = full_pipeline.fit_transform(housing_strat_train)
-    svm(housing_strat_train_prepared, housing_strat_train_labels)
+    #svm_gridsearchcv(housing_strat_train_prepared, housing_strat_train_labels)
+    svm_randomizedsearchcv(housing_strat_train_prepared, housing_strat_train_labels)
 
-def svm(housing_prepared, housing_labels):
+def svm_randomizedsearchcv(housing_prepared, housing_labels):
+    param_distribs = {
+        'kernel': ['linear', 'rbf'],
+        'C': reciprocal(20, 200000),
+        'gamma': expon(scale=1.0),
+    }
+
+    svm_reg = SVR()
+    rnd_search = RandomizedSearchCV(svm_reg, param_distributions=param_distribs, n_iter=50, cv=5, scoring='neg_mean_squared_error', verbose=2, n_jobs=4, random_state=42)
+    rnd_search.fit(housing_prepared, housing_labels)
+
+    negative_mse = rnd_search.best_score_
+    rmse = np.sqrt(-negative_mse)
+    with open('svm-best-score', 'w') as f:
+        f.write(f'SVM Best Score: {rmse}\n')
+        f.write(f'SVM Best Hyperparameters: {rnd_search.best_params_}')
+
+def svm_gridsearchcv(housing_prepared, housing_labels):
     param_grid = [
         {'kernel': ['linear'], 'C': [10., 30., 100., 300., 1000., 3000., 10000., 30000.]},
         {'kernel': ['rbf'], 'C': [1.0, 3.0, 10., 30., 100., 300., 1000.],
