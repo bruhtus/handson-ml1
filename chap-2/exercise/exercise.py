@@ -3,6 +3,7 @@ import pandas as pd
 
 from fire import Fire
 from scipy.stats import expon, reciprocal
+
 from sklearn.svm import SVR
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
@@ -92,16 +93,16 @@ def svm_gridsearchcv(housing_prepared, housing_labels):
         f.write(f'SVM Best Score: {rmse}\n')
         f.write(f'SVM Best Hyperparameters: {grid_search.best_params_}')
 
-def add_extra_features(x, housing, add_bedrooms_per_room=True):
+def add_extra_features(X, housing, add_bedrooms_per_room=True):
     rooms_ix, bedrooms_ix, population_ix, household_ix = [list(housing.columns).index(col) for col in ('total_rooms', 'total_bedrooms', 'population', 'households')]
-    rooms_per_household = x[:, rooms_ix] / x[:, household_ix]
-    population_per_household = x[:, population_ix] / x[:, household_ix]
+    rooms_per_household = X[:, rooms_ix] / X[:, household_ix]
+    population_per_household = X[:, population_ix] / X[:, household_ix]
 
     if add_bedrooms_per_room:
-        bedrooms_per_room = x[:, bedrooms_ix] / x[:, rooms_ix]
-        return np.c_[x, rooms_per_household, population_per_household, bedrooms_per_room]
+        bedrooms_per_room = X[:, bedrooms_ix] / X[:, rooms_ix]
+        return np.c_[X, rooms_per_household, population_per_household, bedrooms_per_room]
     else:
-        return np.c_[x, rooms_per_household, population_per_household]
+        return np.c_[X, rooms_per_household, population_per_household]
 
 if __name__ == '__main__':
     Fire(main)
