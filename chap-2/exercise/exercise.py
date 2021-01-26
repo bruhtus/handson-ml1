@@ -18,7 +18,7 @@ from sklearn.model_selection import RandomizedSearchCV
 def main(data):
     pd.set_option('display.max_columns', None)
     housing = pd.read_csv(data)
-    
+
     #add income categories
     housing['income_cat'] = np.ceil(housing['median_income']/1.5)
     housing['income_cat'].where(housing['income_cat'] < 5, 5.0, inplace=True)
@@ -86,7 +86,7 @@ def svm_gridsearchcv(housing_prepared, housing_labels):
     svm_reg = SVR()
     grid_search = GridSearchCV(svm_reg, param_grid, cv=5, scoring='neg_mean_squared_error', verbose=2, n_jobs=4)
     grid_search.fit(housing_prepared, housing_labels)
-    
+
     negative_mse = grid_search.best_score_
     rmse = np.sqrt(-negative_mse)
     with open('svm-best-score', 'w') as f:
