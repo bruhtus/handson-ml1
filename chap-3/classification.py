@@ -13,23 +13,23 @@ def main():
     sort_by_target(mnist)
     X, y = mnist['data'], mnist['target']
     some_digit = X[36000]
-    X_train, y_train, X_test, y_test = X[:60000], y[:60000], X[60000:], y[60000:]
+    X_train, X_test, y_train, y_test = X[:60000], X[60000:], y[:60000], y[60000:]
     shuffle_index = np.random.permutation(60000)
     X_train, y_train = X_train[shuffle_index], y_train[shuffle_index]
 
     y_train_5 = (y_train == 5)
     y_test_5 = (y_test == 5)
 
-    sgd_clf = SGDClassifier(max_iter=5, tol=np.infty, random_state=42)
+    sgd_clf = SGDClassifier(max_iter=5, tol=-np.infty, random_state=42)
     sgd_clf.fit(X_train, y_train_5)
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
-    reorder_test = np.array(sorted([(target, 1) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
+    reorder_test = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[60000:])]))[:, 1]
     mnist.data[:60000] = mnist.data[reorder_train]
     mnist.target[:60000] = mnist.target[reorder_train]
-    mnist.data[:60000] = mnist.data[reorder_test + 60000]
-    mnist.target[:60000] = mnist.target[reorder_test + 60000]
+    mnist.data[60000:] = mnist.data[reorder_test + 60000]
+    mnist.target[60000:] = mnist.target[reorder_test + 60000]
 
 def save_fig(fig_id, tight_layout=True):
     path = os.path.join('.', fig_id + ".png")
