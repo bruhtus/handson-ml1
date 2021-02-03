@@ -12,10 +12,8 @@ def main():
     sort_by_target(mnist)
     X, y = mnist['data'], mnist['target']
     some_digit = X[36000]
-    some_digit_image = some_digit.reshape(28, 28)
-    plt.imshow(some_digit_image, cmap=mpl.cm.binary, interpolation='nearest')
-    plt.axis('off')
-    save_fig('some_digit_mnist')
+    plot_digit(some_digit)
+    save_fig('mnist_digit')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
@@ -31,6 +29,11 @@ def save_fig(fig_id, tight_layout=True):
     if tight_layout:
         plt.tight_layout()
     plt.savefig(path, format='png', dpi=300)
+
+def plot_digit(data):
+    image = data.reshape(28, 28)
+    plt.imshow(image, cmap=mpl.cm.binary, interpolation='nearest')
+    plt.axis('off')
 
 if __name__ == '__main__':
     Fire(main)
