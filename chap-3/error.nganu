@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "classification.py", line 47, in <module>
+    Fire(main)
+  File "/usr/local/lib/python3.6/dist-packages/fire/core.py", line 141, in Fire
+    component_trace = _Fire(component, args, parsed_flag_args, context, name)
+  File "/usr/local/lib/python3.6/dist-packages/fire/core.py", line 471, in _Fire
+    target=component.__name__)
+  File "/usr/local/lib/python3.6/dist-packages/fire/core.py", line 681, in _CallAndUpdateTrace
+    component = fn(*varargs, **kwargs)
+  File "classification.py", line 24, in main
+    sgd_clf.fit(X_train, y_train_5)
+  File "/usr/local/lib/python3.6/dist-packages/sklearn/linear_model/_stochastic_gradient.py", line 711, in fit
+    sample_weight=sample_weight)
+  File "/usr/local/lib/python3.6/dist-packages/sklearn/linear_model/_stochastic_gradient.py", line 550, in _fit
+    classes, sample_weight, coef_init, intercept_init)
+  File "/usr/local/lib/python3.6/dist-packages/sklearn/linear_model/_stochastic_gradient.py", line 514, in _partial_fit
+    " got %d class" % n_classes)
+ValueError: The number of classes has to be greater than one; got 1 class
