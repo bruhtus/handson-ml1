@@ -1,0 +1,3 @@
+cross_val_score SGDClassifier: [0.9574  0.9546  0.95535]
+
+cross_val_score BaseEstimator: [0.90975 0.90925 0.90995]
