@@ -1,5 +1,5 @@
 Traceback (most recent call last):
-  File "classification.py", line 47, in <module>
+  File "classification.py", line 67, in <module>
     Fire(main)
   File "/usr/local/lib/python3.6/dist-packages/fire/core.py", line 141, in Fire
     component_trace = _Fire(component, args, parsed_flag_args, context, name)
@@ -7,12 +7,12 @@ Traceback (most recent call last):
     target=component.__name__)
   File "/usr/local/lib/python3.6/dist-packages/fire/core.py", line 681, in _CallAndUpdateTrace
     component = fn(*varargs, **kwargs)
-  File "classification.py", line 24, in main
-    sgd_clf.fit(X_train, y_train_5)
-  File "/usr/local/lib/python3.6/dist-packages/sklearn/linear_model/_stochastic_gradient.py", line 711, in fit
-    sample_weight=sample_weight)
-  File "/usr/local/lib/python3.6/dist-packages/sklearn/linear_model/_stochastic_gradient.py", line 550, in _fit
-    classes, sample_weight, coef_init, intercept_init)
-  File "/usr/local/lib/python3.6/dist-packages/sklearn/linear_model/_stochastic_gradient.py", line 514, in _partial_fit
-    " got %d class" % n_classes)
-ValueError: The number of classes has to be greater than one; got 1 class
+  File "classification.py", line 14, in main
+    mnist = fetch_openml('mnist_784', version=1, cache=True)
+  File "/usr/local/lib/python3.6/dist-packages/sklearn/datasets/_openml.py", line 729, in fetch_openml
+    data_qualities = _get_data_qualities(data_id, data_home)
+  File "/usr/local/lib/python3.6/dist-packages/sklearn/datasets/_openml.py", line 418, in _get_data_qualities
+    data_home)
+  File "/usr/local/lib/python3.6/dist-packages/sklearn/datasets/_openml.py", line 168, in _get_json_content_from_openml_api
+    raise ValueError(error_message)
+ValueError: Dataset with data_id 554 not found.
