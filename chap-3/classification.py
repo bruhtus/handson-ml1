@@ -6,10 +6,12 @@ import matplotlib.pyplot as plt
 from fire import Fire
 from sklearn.base import clone
 from sklearn.base import BaseEstimator
+from sklearn.metrics import confusion_matrix
 from sklearn.datasets import fetch_openml
 from sklearn.linear_model import SGDClassifier #Stochastic Gradient Descent
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import cross_val_predict
 
 def main():
     mnist = fetch_openml('mnist_784', version=1, cache=True)
@@ -26,10 +28,10 @@ def main():
 
     sgd_clf = SGDClassifier(max_iter=5, tol=-np.infty, random_state=42)
     sgd_clf.fit(X_train, y_train_5)
-    print(f"cross_val_score SGDClassifier: {cross_val_score(sgd_clf, X_train, y_train_5, cv=3, scoring='accuracy')}\n")
 
-    never_5_clf = Never5Classifier()
-    print(f"cross_val_score BaseEstimator: {cross_val_score(never_5_clf, X_train, y_train_5, cv=3, scoring='accuracy')}\n")
+    y_train_pred = cross_val_predict(sgd_clf, X_train, y_train_5, cv=3)
+
+    print(confusion_matrix(y_train_5, y_train_pred))
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
