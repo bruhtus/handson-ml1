@@ -7,6 +7,7 @@ from fire import Fire
 from sklearn.base import clone
 from sklearn.base import BaseEstimator
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import precision_score, recall_score
 from sklearn.datasets import fetch_openml
 from sklearn.linear_model import SGDClassifier #Stochastic Gradient Descent
 from sklearn.model_selection import cross_val_score
@@ -31,7 +32,8 @@ def main():
 
     y_train_pred = cross_val_predict(sgd_clf, X_train, y_train_5, cv=3)
 
-    print(confusion_matrix(y_train_5, y_train_pred))
+    print(f'precision: {precision_score(y_train_5, y_train_pred)}')
+    print(f'recall: {recall_score(y_train_5, y_train_pred)}')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
