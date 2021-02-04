@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 from fire import Fire
 from sklearn.datasets import fetch_openml
 from sklearn.linear_model import SGDClassifier #Stochastic Gradient Descent
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import StratifiedKFold
+from sklearn.base import clone
 
 def main():
     mnist = fetch_openml('mnist_784', version=1, cache=True)
@@ -22,6 +25,8 @@ def main():
 
     sgd_clf = SGDClassifier(max_iter=5, tol=-np.infty, random_state=42)
     sgd_clf.fit(X_train, y_train_5)
+    print(f"cross_val_score: {cross_val_score(sgd_clf, X_train, y_train_5, cv=3, scoring='accuracy')}\n")
+    print(cross_validation_implementation(sgd_clf, X_train, y_train_5))
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
@@ -42,6 +47,24 @@ def plot_digit(data):
     image = data.reshape(28, 28)
     plt.imshow(image, cmap=mpl.cm.binary, interpolation='nearest')
     plt.axis('off')
+
+def cross_validation_implementation(sgd_clf, X_train, y_train):
+    skfolds = StratifiedKFold(n_splits=3)
+    results = []
+
+    for train_index, test_index in skfolds.split(X_train, y_train):
+        clone_clf = clone(sgd_clf)
+        X_train_folds = X_train[train_index]
+        y_train_folds = (y_train[train_index])
+        X_test_folds = X_train[test_index]
+        y_test_folds = (y_train[test_index])
+
+        clone_clf.fit(X_train_folds, y_train_folds)
+        y_pred = clone_clf.predict(X_test_folds)
+        n_correct = sum(y_pred == y_test_folds)
+        results.append(n_correct / len(y_pred))
+
+    print(results)
 
 if __name__ == '__main__':
     Fire(main)
