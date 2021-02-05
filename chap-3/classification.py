@@ -32,7 +32,11 @@ def main():
 
     y_train_pred = cross_val_predict(sgd_clf, X_train, y_train_5, cv=3)
 
-    print(f'f1-score: {f1_score(y_train_5, y_train_pred)}')
+    y_scores = sgd_clf.decision_function([some_digit])
+    print(f'Decision function score: {y_scores}')
+    threshold = 100000
+    y_some_digit_pred = (y_scores > threshold)
+    print(f'Prediction result (threshold: {threshold}): {y_some_digit_pred}\n')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]

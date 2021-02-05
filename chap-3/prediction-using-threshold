@@ -1,0 +1,8 @@
+Decision function score: [199756.28267472]
+Prediction result (threshold: 0): [ True]
+
+Decision function score: [150160.16285491]
+Prediction result (threshold: 10000): [ True]
+
+Decision function score: [-119684.20177216]
+Prediction result (threshold: 100000): [False]
