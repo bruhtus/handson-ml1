@@ -8,6 +8,7 @@ from sklearn.base import clone
 from sklearn.base import BaseEstimator
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_score, recall_score, f1_score
+from sklearn.metrics import precision_recall_curve
 from sklearn.datasets import fetch_openml
 from sklearn.linear_model import SGDClassifier #Stochastic Gradient Descent
 from sklearn.model_selection import cross_val_score
@@ -30,13 +31,17 @@ def main():
     sgd_clf = SGDClassifier(max_iter=5, tol=-np.infty, random_state=42)
     sgd_clf.fit(X_train, y_train_5)
 
-    y_train_pred = cross_val_predict(sgd_clf, X_train, y_train_5, cv=3)
+    # y_scores = sgd_clf.decision_function([some_digit])
+    # print(f'Decision function score: {y_scores}')
+    # threshold = 100000
+    # y_some_digit_pred = (y_scores > threshold)
+    # print(f'Prediction result (threshold: {threshold}): {y_some_digit_pred}\n')
 
-    y_scores = sgd_clf.decision_function([some_digit])
-    print(f'Decision function score: {y_scores}')
-    threshold = 100000
-    y_some_digit_pred = (y_scores > threshold)
-    print(f'Prediction result (threshold: {threshold}): {y_some_digit_pred}\n')
+    y_train_pred = cross_val_predict(sgd_clf, X_train, y_train_5, cv=3, method="decision_function")
+    precisions, recalls, thresholds = precision_recall_curve(y_train_5, y_train_pred)
+
+    plot_precision_recall_vs_threshold(precisions, recalls, thresholds)
+    save_fig('precision-recall-threshold')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
@@ -75,6 +80,13 @@ def cross_validation_implementation(sgd_clf, X_train, y_train):
         results.append(n_correct / len(y_pred))
 
     print(results)
+
+def plot_precision_recall_vs_threshold(precisions, recalls, thresholds):
+    plt.plot(thresholds, precisions[:-1], "b--", label="Precision")
+    plt.plot(thresholds, recalls[:-1], "g-", label="Recall")
+    plt.xlabel("Threshold")
+    plt.legend(loc="upper left")
+    plt.ylim([0, 1])
 
 class Never5Classifier(BaseEstimator):
     def fit(self, X, y=None):
