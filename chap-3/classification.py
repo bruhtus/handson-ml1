@@ -9,7 +9,7 @@ from sklearn.base import BaseEstimator
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.metrics import precision_recall_curve
-from sklearn.metrics import roc_curve
+from sklearn.metrics import roc_curve, roc_auc_score
 from sklearn.datasets import fetch_openml
 from sklearn.linear_model import SGDClassifier #Stochastic Gradient Descent
 from sklearn.model_selection import cross_val_score
@@ -50,9 +50,11 @@ def main():
     # print(f'Precision (almost or higher than 90%): {precision_score(y_train_5, y_train_pred_90)}')
     # print(f'Recall: {recall_score(y_train_5, y_train_pred_90)}')
 
-    fpr, tpr, threshold = roc_curve(y_train_5, y_scores)
-    plot_roc_curve(fpr, tpr)
-    save_fig('fpr-tpr-curve')
+    # fpr, tpr, threshold = roc_curve(y_train_5, y_scores)
+    # plot_roc_curve(fpr, tpr)
+    # save_fig('fpr-tpr-curve')
+
+    print(f'Area Under Curve: {roc_auc_score(y_train_5, y_scores)}')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
