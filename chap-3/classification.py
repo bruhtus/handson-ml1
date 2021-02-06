@@ -42,8 +42,12 @@ def main():
     precisions, recalls, thresholds = precision_recall_curve(y_train_5, y_scores)
 
     # plot_precision_recall_vs_threshold(precisions, recalls, thresholds)
-    plot_precision_vs_recall(precisions, recalls)
-    save_fig('precision-recall')
+    # plot_precision_vs_recall(precisions, recalls)
+    # save_fig('precision-recall')
+
+    y_train_pred_90 = (y_scores > 70000)
+    print(f'Precision (almost or higher than 90%): {precision_score(y_train_5, y_train_pred_90)}')
+    print(f'Recall: {recall_score(y_train_5, y_train_pred_90)}')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
