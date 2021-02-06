@@ -38,7 +38,8 @@ def main():
     # print(f'Prediction result (threshold: {threshold}): {y_some_digit_pred}\n')
 
     y_train_pred = cross_val_predict(sgd_clf, X_train, y_train_5, cv=3, method="decision_function")
-    precisions, recalls, thresholds = precision_recall_curve(y_train_5, y_train_pred)
+    y_scores = cross_val_predict(sgd_clf, X_train, y_train_5, cv=3, method="decision_function")
+    precisions, recalls, thresholds = precision_recall_curve(y_train_5, y_scores)
 
     plot_precision_recall_vs_threshold(precisions, recalls, thresholds)
     save_fig('precision-recall-threshold')
@@ -87,6 +88,7 @@ def plot_precision_recall_vs_threshold(precisions, recalls, thresholds):
     plt.xlabel("Threshold")
     plt.legend(loc="upper left")
     plt.ylim([0, 1])
+    plt.xlim([-700000, 700000])
 
 class Never5Classifier(BaseEstimator):
     def fit(self, X, y=None):
