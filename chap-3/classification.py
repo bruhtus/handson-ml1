@@ -4,14 +4,16 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 from fire import Fire
+from sklearn.datasets import fetch_openml
+from sklearn.ensemble import RandomForestClassifier #Stochastic Gradient Descent
+from sklearn.linear_model import SGDClassifier #Stochastic Gradient Descent
+
 from sklearn.base import clone
 from sklearn.base import BaseEstimator
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import roc_curve, roc_auc_score
-from sklearn.datasets import fetch_openml
-from sklearn.linear_model import SGDClassifier #Stochastic Gradient Descent
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import cross_val_predict
@@ -50,11 +52,20 @@ def main():
     # print(f'Precision (almost or higher than 90%): {precision_score(y_train_5, y_train_pred_90)}')
     # print(f'Recall: {recall_score(y_train_5, y_train_pred_90)}')
 
-    # fpr, tpr, threshold = roc_curve(y_train_5, y_scores)
+    fpr, tpr, threshold = roc_curve(y_train_5, y_scores)
     # plot_roc_curve(fpr, tpr)
     # save_fig('fpr-tpr-curve')
 
-    print(f'Area Under Curve: {roc_auc_score(y_train_5, y_scores)}')
+    # print(f'Area Under Curve: {roc_auc_score(y_train_5, y_scores)}')
+
+    forest_clf = RandomForestClassifier(n_estimators=10, random_state=42)
+    y_probas_forest = cross_val_predict(forest_clf, X_train, y_train_5, cv=3, method="predict_proba")
+    y_scores_forest = y_probas_forest[:, 1] #score = probability of positive class
+    fpr_forest, tpr_forest, thresholds_forest = roc_curve(y_train_5, y_scores_forest)
+    plt.plot(fpr, tpr, "b:", label="SGD")
+    plot_roc_curve(fpr_forest, tpr_forest, "Random Forest")
+    plt.legend(loc="lower right")
+    save_fig('random-forest-curve')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
