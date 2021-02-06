@@ -9,6 +9,7 @@ from sklearn.base import BaseEstimator
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.metrics import precision_recall_curve
+from sklearn.metrics import roc_curve
 from sklearn.datasets import fetch_openml
 from sklearn.linear_model import SGDClassifier #Stochastic Gradient Descent
 from sklearn.model_selection import cross_val_score
@@ -45,9 +46,13 @@ def main():
     # plot_precision_vs_recall(precisions, recalls)
     # save_fig('precision-recall')
 
-    y_train_pred_90 = (y_scores > 70000)
-    print(f'Precision (almost or higher than 90%): {precision_score(y_train_5, y_train_pred_90)}')
-    print(f'Recall: {recall_score(y_train_5, y_train_pred_90)}')
+    # y_train_pred_90 = (y_scores > 70000)
+    # print(f'Precision (almost or higher than 90%): {precision_score(y_train_5, y_train_pred_90)}')
+    # print(f'Recall: {recall_score(y_train_5, y_train_pred_90)}')
+
+    fpr, tpr, threshold = roc_curve(y_train_5, y_scores)
+    plot_roc_curve(fpr, tpr)
+    save_fig('fpr-tpr-curve')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
@@ -100,6 +105,13 @@ def plot_precision_vs_recall(precisions, recalls):
     plt.xlabel("Recall", fontsize=16)
     plt.ylabel("Precision", fontsize=16)
     plt.axis([0, 1, 0, 1])
+
+def plot_roc_curve(fpr, tpr, label=None):
+    plt.plot(fpr, tpr, linewidth=2, label=label)
+    plt.plot([0, 1], [0, 1], 'k--')
+    plt.axis([0, 1, 0, 1])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
 
 class Never5Classifier(BaseEstimator):
     def fit(self, X, y=None):
