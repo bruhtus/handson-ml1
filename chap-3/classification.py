@@ -28,31 +28,37 @@ def main():
     shuffle_index = np.random.permutation(60000)
     X_train, y_train = X_train[shuffle_index], y_train[shuffle_index]
 
-    y_train_5 = (y_train == 5)
-    y_test_5 = (y_test == 5)
+    # y_train_5 = (y_train == 5)
+    # y_test_5 = (y_test == 5)
 
     sgd_clf = SGDClassifier(max_iter=5, tol=-np.infty, random_state=42)
-    sgd_clf.fit(X_train, y_train_5)
+    # sgd_clf.fit(X_train, y_train_5)
 
     # predict_with_threshold(sgd_clf, some_digit)
 
-    y_train_pred = cross_val_predict(sgd_clf, X_train, y_train_5, cv=3)
-    y_scores = cross_val_predict(sgd_clf, X_train, y_train_5, cv=3, method="decision_function")
-    precisions, recalls, thresholds = precision_recall_curve(y_train_5, y_scores)
+    # y_train_pred = cross_val_predict(sgd_clf, X_train, y_train_5, cv=3)
+    # y_scores = cross_val_predict(sgd_clf, X_train, y_train_5, cv=3, method="decision_function")
+    # precisions, recalls, thresholds = precision_recall_curve(y_train_5, y_scores)
 
     # plot_precision_recall_threshold(precisions, recalls, thresholds)
     # precision_higher_90(y_scores, y_train_5)
 
-    fpr, tpr, threshold = roc_curve(y_train_5, y_scores)
+    # fpr, tpr, threshold = roc_curve(y_train_5, y_scores)
     # plot_roc_curve(fpr, tpr)
     # save_fig('fpr-tpr-curve')
 
     # print(f'Area Under Curve: {roc_auc_score(y_train_5, y_scores)}')
 
-    forest_clf = RandomForestClassifier(n_estimators=10, random_state=42)
+    # forest_clf = RandomForestClassifier(n_estimators=10, random_state=42)
 
     # random_forest_plot(forest_clf, X_train, y_train_5, fpr, tpr)
     # random_forest_precision_recall(forest_clf, X_train, y_train_5)
+
+    sgd_clf.fit(X_train, y_train)
+    # print(sgd_clf.predict([some_digit]))
+    some_digit_scores = sgd_clf.decision_function([some_digit])
+    # print(np.argmax(some_digit_scores)) #return the highest score
+    print(f'SGDClassifier Classes: {sgd_clf.classes_}')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
