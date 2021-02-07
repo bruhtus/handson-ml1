@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from fire import Fire
 from sklearn.datasets import fetch_openml
-from sklearn.ensemble import RandomForestClassifier #Stochastic Gradient Descent
+from sklearn.ensemble import RandomForestClassifier #Random Forest
 from sklearn.linear_model import SGDClassifier #Stochastic Gradient Descent
 
 from sklearn.base import clone
