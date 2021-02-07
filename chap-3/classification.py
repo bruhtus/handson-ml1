@@ -61,13 +61,14 @@ def main():
     forest_clf = RandomForestClassifier(n_estimators=10, random_state=42)
     y_probas_forest = cross_val_predict(forest_clf, X_train, y_train_5, cv=3, method="predict_proba")
     y_scores_forest = y_probas_forest[:, 1] #score = probability of positive class
+    y_train_pred_forest = cross_val_predict(forest_clf, X_train, y_train_5, cv=3)
     # fpr_forest, tpr_forest, thresholds_forest = roc_curve(y_train_5, y_scores_forest)
     # plt.plot(fpr, tpr, "b:", label="SGD")
     # plot_roc_curve(fpr_forest, tpr_forest, "Random Forest")
     # plt.legend(loc="lower right")
     # save_fig('random-forest-curve')
-    print(f'Precision Random Forest: {precision_score(y_train_5, y_scores_forest)}')
-    print(f'Recall Random Forest: {recall_score(y_train_5, y_scores_forest)}')
+    print(f'Precision Random Forest: {precision_score(y_train_5, y_train_pred_forest)}')
+    print(f'Recall Random Forest: {recall_score(y_train_5, y_train_pred_forest)}')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
