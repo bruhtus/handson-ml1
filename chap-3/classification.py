@@ -66,7 +66,8 @@ def main():
     # plot_roc_curve(fpr_forest, tpr_forest, "Random Forest")
     # plt.legend(loc="lower right")
     # save_fig('random-forest-curve')
-    print(f'ROC AUC Random Forest: {roc_auc_score(y_train_5, y_scores_forest)}')
+    print(f'Precision Random Forest: {precision_score(y_train_5, y_scores_forest)}')
+    print(f'Recall Random Forest: {recall_score(y_train_5, y_scores_forest)}')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]

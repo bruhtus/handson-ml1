@@ -1,5 +1,5 @@
 Traceback (most recent call last):
-  File "classification.py", line 67, in <module>
+  File "classification.py", line 138, in <module>
     Fire(main)
   File "/usr/local/lib/python3.6/dist-packages/fire/core.py", line 141, in Fire
     component_trace = _Fire(component, args, parsed_flag_args, context, name)
@@ -7,12 +7,14 @@ Traceback (most recent call last):
     target=component.__name__)
   File "/usr/local/lib/python3.6/dist-packages/fire/core.py", line 681, in _CallAndUpdateTrace
     component = fn(*varargs, **kwargs)
-  File "classification.py", line 14, in main
-    mnist = fetch_openml('mnist_784', version=1, cache=True)
-  File "/usr/local/lib/python3.6/dist-packages/sklearn/datasets/_openml.py", line 729, in fetch_openml
-    data_qualities = _get_data_qualities(data_id, data_home)
-  File "/usr/local/lib/python3.6/dist-packages/sklearn/datasets/_openml.py", line 418, in _get_data_qualities
-    data_home)
-  File "/usr/local/lib/python3.6/dist-packages/sklearn/datasets/_openml.py", line 168, in _get_json_content_from_openml_api
-    raise ValueError(error_message)
-ValueError: Dataset with data_id 554 not found.
+  File "classification.py", line 69, in main
+    print(f'Precision Random Forest: {precision_score(y_train_5, y_scores_forest)}')
+  File "/usr/local/lib/python3.6/dist-packages/sklearn/metrics/_classification.py", line 1672, in precision_score
+    zero_division=zero_division)
+  File "/usr/local/lib/python3.6/dist-packages/sklearn/metrics/_classification.py", line 1484, in precision_recall_fscore_support
+    pos_label)
+  File "/usr/local/lib/python3.6/dist-packages/sklearn/metrics/_classification.py", line 1301, in _check_set_wise_labels
+    y_type, y_true, y_pred = _check_targets(y_true, y_pred)
+  File "/usr/local/lib/python3.6/dist-packages/sklearn/metrics/_classification.py", line 90, in _check_targets
+    "and {1} targets".format(type_true, type_pred))
+ValueError: Classification metrics can't handle a mix of binary and continuous targets
