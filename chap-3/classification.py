@@ -7,6 +7,7 @@ from fire import Fire
 from sklearn.datasets import fetch_openml
 from sklearn.ensemble import RandomForestClassifier #Random Forest
 from sklearn.linear_model import SGDClassifier #Stochastic Gradient Descent
+from sklearn.multiclass import OneVsOneClassifier
 
 from sklearn.base import clone
 from sklearn.base import BaseEstimator
@@ -58,7 +59,8 @@ def main():
     # print(sgd_clf.predict([some_digit]))
     some_digit_scores = sgd_clf.decision_function([some_digit])
     # print(np.argmax(some_digit_scores)) #return the highest score
-    print(f'SGDClassifier Classes: {sgd_clf.classes_}')
+    # print(f'SGDClassifier Classes: {sgd_clf.classes_}')
+    OneVsOne_classifier(X_train, y_train, some_digit)
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
@@ -149,6 +151,12 @@ def predict_with_threshold(sgd_clf, some_digit):
     threshold = 100000
     y_some_digit_pred = (y_scores > threshold)
     print(f'Prediction result (threshold: {threshold}): {y_some_digit_pred}\n')
+
+def OneVsOne_classifier(X_train, y_train, some_digit):
+    ovo_clf = OneVsOneClassifier(SGDClassifier(random_state=42))
+    ovo_clf.fit(X_train, y_train)
+    print(f'Predict: {ovo_clf.predict([some_digit])}\n')
+    print(f'Length estimators: {len(ovo_clf.estimators_)}\n')
 
 class Never5Classifier(BaseEstimator):
     def fit(self, X, y=None):
