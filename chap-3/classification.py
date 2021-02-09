@@ -50,17 +50,23 @@ def main():
 
     # print(f'Area Under Curve: {roc_auc_score(y_train_5, y_scores)}')
 
-    # forest_clf = RandomForestClassifier(n_estimators=10, random_state=42)
+    forest_clf = RandomForestClassifier(n_estimators=10, random_state=42)
 
-    # random_forest_plot(forest_clf, X_train, y_train_5, fpr, tpr)
-    # random_forest_precision_recall(forest_clf, X_train, y_train_5)
+    # randomforest_plot_5detector(forest_clf, X_train, y_train_5, fpr, tpr)
 
-    sgd_clf.fit(X_train, y_train)
+    # sgd_clf.fit(X_train, y_train)
     # print(sgd_clf.predict([some_digit]))
-    some_digit_scores = sgd_clf.decision_function([some_digit])
+    # some_digit_scores = sgd_clf.decision_function([some_digit])
     # print(np.argmax(some_digit_scores)) #return the highest score
     # print(f'SGDClassifier Classes: {sgd_clf.classes_}')
-    OneVsOne_classifier(X_train, y_train, some_digit)
+    # OneVsOne_classifier(X_train, y_train, some_digit)
+
+    forest_clf.fit(X_train, y_train)
+    digit = y[36000]
+    print(f'Real digit: {digit}')
+    print(f'Predict: {forest_clf.predict([some_digit])}')
+    print(f'Classes: {forest_clf.classes_}')
+    print(f'Probabilities each class: {forest_clf.predict_proba([some_digit])}')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
@@ -157,6 +163,10 @@ def OneVsOne_classifier(X_train, y_train, some_digit):
     ovo_clf.fit(X_train, y_train)
     print(f'Predict: {ovo_clf.predict([some_digit])}\n')
     print(f'Length estimators: {len(ovo_clf.estimators_)}\n')
+
+def randomforest_plot_5detector(forest_clf, X_train, y_train_5, fpr, tpr):
+    random_forest_plot(forest_clf, X_train, y_train_5, fpr, tpr)
+    random_forest_precision_recall(forest_clf, X_train, y_train_5)
 
 class Never5Classifier(BaseEstimator):
     def fit(self, X, y=None):
