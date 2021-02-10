@@ -52,21 +52,27 @@ def main():
 
     # print(f'Area Under Curve: {roc_auc_score(y_train_5, y_scores)}')
 
-    forest_clf = RandomForestClassifier(n_estimators=10, random_state=42)
+    # forest_clf = RandomForestClassifier(n_estimators=10, random_state=42)
 
     # randomforest_plot_5detector(forest_clf, X_train, y_train_5, fpr, tpr)
 
-    sgd_clf.fit(X_train, y_train)
+    # sgd_clf.fit(X_train, y_train)
     # clf_predict_sgd(sgd_clf, digit, some_digit)
     # OneVsOne_classifier(X_train, y_train, some_digit)
 
-    forest_clf.fit(X_train, y_train)
+    # forest_clf.fit(X_train, y_train)
     # clf_predict_forest(forest_clf, digit, some_digit)
 
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train.astype(np.float64))
-    print(f'Without scaler: {cross_val_score(sgd_clf, X_train, y_train, cv=3, scoring="accuracy")}')
-    print(f'With scaler: {cross_val_score(sgd_clf, X_train_scaled, y_train, cv=3, scoring="accuracy")}')
+    # print(f'Without scaler: {cross_val_score(sgd_clf, X_train, y_train, cv=3, scoring="accuracy")}')
+    # print(f'With scaler: {cross_val_score(sgd_clf, X_train_scaled, y_train, cv=3, scoring="accuracy")}')
+
+    y_train_pred_scaled = cross_val_predict(sgd_clf, X_train_scaled, y_train, cv=3)
+    conf_mx = confusion_matrix(y_train, y_train_pred_scaled)
+    print(f'confusion matrix:\n{conf_mx}')
+    plt.matshow(conf_mx, cmap=plt.cm.gray)
+    # save_fig('scaled-confusion-matrix')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
