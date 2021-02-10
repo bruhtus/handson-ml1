@@ -6,8 +6,9 @@ import matplotlib.pyplot as plt
 from fire import Fire
 from sklearn.datasets import fetch_openml
 from sklearn.ensemble import RandomForestClassifier #Random Forest
-from sklearn.linear_model import SGDClassifier #Stochastic Gradient Descent
 from sklearn.multiclass import OneVsOneClassifier
+from sklearn.linear_model import SGDClassifier #Stochastic Gradient Descent
+from sklearn.preprocessing import StandardScaler
 
 from sklearn.base import clone
 from sklearn.base import BaseEstimator
@@ -55,12 +56,17 @@ def main():
 
     # randomforest_plot_5detector(forest_clf, X_train, y_train_5, fpr, tpr)
 
-    # sgd_clf.fit(X_train, y_train)
+    sgd_clf.fit(X_train, y_train)
     # clf_predict_sgd(sgd_clf, digit, some_digit)
     # OneVsOne_classifier(X_train, y_train, some_digit)
 
     forest_clf.fit(X_train, y_train)
-    clf_predict_forest(forest_clf, digit, some_digit)
+    # clf_predict_forest(forest_clf, digit, some_digit)
+
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train.astype(np.float64))
+    print(f'Without scaler: {cross_val_score(sgd_clf, X_train, y_train, cv=3, scoring="accuracy")}')
+    print(f'With scaler: {cross_val_score(sgd_clf, X_train_scaled, y_train, cv=3, scoring="accuracy")}')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
