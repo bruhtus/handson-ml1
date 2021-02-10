@@ -70,9 +70,15 @@ def main():
 
     y_train_pred_scaled = cross_val_predict(sgd_clf, X_train_scaled, y_train, cv=3)
     conf_mx = confusion_matrix(y_train, y_train_pred_scaled)
-    print(f'confusion matrix:\n{conf_mx}')
-    plt.matshow(conf_mx, cmap=plt.cm.gray)
-    # save_fig('scaled-confusion-matrix')
+    # print(f'confusion matrix:\n{conf_mx}')
+    # plt.matshow(conf_mx, cmap=plt.cm.gray)
+    # save_fig('scaled-confusion-matrix', tight_layout=False)
+
+    row_sums = conf_mx.sum(axis=1, keepdims=True) #keepdims to keep dimensions of the array
+    norm_conf_mx = conf_mx / row_sums
+    np.fill_diagonal(norm_conf_mx, 0) #fill diagonal with 0s, keep only the errors
+    plt.matshow(norm_conf_mx, cmap=plt.cm.gray)
+    save_fig('compare-errors-rates', tight_layout=False)
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
