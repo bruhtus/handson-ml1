@@ -69,16 +69,17 @@ def main():
     # print(f'With scaler: {cross_val_score(sgd_clf, X_train_scaled, y_train, cv=3, scoring="accuracy")}')
 
     y_train_pred_scaled = cross_val_predict(sgd_clf, X_train_scaled, y_train, cv=3)
-    conf_mx = confusion_matrix(y_train, y_train_pred_scaled)
+    # conf_mx = confusion_matrix(y_train, y_train_pred_scaled)
     # print(f'confusion matrix:\n{conf_mx}')
     # plt.matshow(conf_mx, cmap=plt.cm.gray)
     # save_fig('scaled-confusion-matrix', tight_layout=False)
 
-    row_sums = conf_mx.sum(axis=1, keepdims=True) #keepdims to keep dimensions of the array
-    norm_conf_mx = conf_mx / row_sums
-    np.fill_diagonal(norm_conf_mx, 0) #fill diagonal with 0s, keep only the errors
-    plt.matshow(norm_conf_mx, cmap=plt.cm.gray)
-    save_fig('compare-errors-rates', tight_layout=False)
+    # row_sums = conf_mx.sum(axis=1, keepdims=True) #keepdims to keep dimensions of the array
+    # norm_conf_mx = conf_mx / row_sums
+    # np.fill_diagonal(norm_conf_mx, 0) #fill diagonal with 0s, keep only the errors
+    # plt.matshow(norm_conf_mx, cmap=plt.cm.gray)
+    # save_fig('compare-errors-rates', tight_layout=False)
+    check_individual_errors(X_train, y_train, y_train_pred_scaled, 3, 5)
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
@@ -98,6 +99,23 @@ def save_fig(fig_id, tight_layout=True):
 def plot_digit(data):
     image = data.reshape(28, 28)
     plt.imshow(image, cmap=mpl.cm.binary, interpolation='nearest')
+    plt.axis('off')
+
+def plot_digits(instances, images_per_row=10, **options):
+    size = 28
+    images_per_row = min(len(instances), images_per_row)
+    images = [instance.reshape(size, size) for instance in instances]
+    n_rows = (len(instances) - 1) // images_per_row + 1
+    row_images = []
+    n_empty = n_rows * images_per_row - len(instances)
+    images.append(np.zeros((size, size * n_empty)))
+
+    for row in range(n_rows):
+        rimages = images[row * images_per_row: (row + 1) * images_per_row]
+        row_images.append(np.concatenate(rimages, axis=1))
+
+    image = np.concatenate(row_images, axis=0)
+    plt.imshow(image, cmap=mpl.cm.binary, **options)
     plt.axis('off')
 
 def cross_validation_implementation(sgd_clf, X_train, y_train):
@@ -192,6 +210,19 @@ def clf_predict_sgd(clf, target_digit, image_digit):
     print(f'Classes: {clf.classes_}')
     scores = clf.decision_function([image_digit])
     print(f'Index with highest score: {np.argmax(scores)}') #return the highest score
+
+def check_individual_errors(X_train, y_train, y_train_pred, cl_a, cl_b):
+    X_aa = X_train[(y_train == cl_a) & (y_train_pred == cl_a)]
+    X_ab = X_train[(y_train == cl_a) & (y_train_pred == cl_b)]
+    X_ba = X_train[(y_train == cl_b) & (y_train_pred == cl_a)]
+    X_bb = X_train[(y_train == cl_b) & (y_train_pred == cl_b)]
+
+    plt.figure(figsize=(8,8))
+    plt.subplot(221); plot_digits(X_aa[:25], images_per_row=5)
+    plt.subplot(222); plot_digits(X_ab[:25], images_per_row=5)
+    plt.subplot(223); plot_digits(X_ba[:25], images_per_row=5)
+    plt.subplot(224); plot_digits(X_bb[:25], images_per_row=5)
+    save_fig('error-analysis-digits-plot', tight_layout=False)
 
 class Never5Classifier(BaseEstimator):
     def fit(self, X, y=None):
