@@ -69,7 +69,7 @@ def main():
     # print(f'Without scaler: {cross_val_score(sgd_clf, X_train, y_train, cv=3, scoring="accuracy")}')
     # print(f'With scaler: {cross_val_score(sgd_clf, X_train_scaled, y_train, cv=3, scoring="accuracy")}')
 
-    y_train_pred_scaled = cross_val_predict(sgd_clf, X_train_scaled, y_train, cv=3)
+    # y_train_pred_scaled = cross_val_predict(sgd_clf, X_train_scaled, y_train, cv=3)
     # conf_mx = confusion_matrix(y_train, y_train_pred_scaled)
     # print(f'confusion matrix:\n{conf_mx}')
     # plt.matshow(conf_mx, cmap=plt.cm.gray)
@@ -89,8 +89,10 @@ def main():
 
     knn_clf = KNeighborsClassifier() #support multilabel classification
     knn_clf.fit(X_train, y_multilabel)
-    print(f'The digit: {digit}\n')
-    print(f'>=7, odd: {knn_clf.predict([some_digit])}')
+    # print(f'The digit: {digit}\n')
+    # print(f'>=7, odd: {knn_clf.predict([some_digit])}')
+    y_train_knn_pred = cross_val_predict(knn_clf, X_train, y_train, cv=3)
+    print(f'KNN f1-score: {f1_score(y_train, y_train_knn_pred, average="macro")}')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
