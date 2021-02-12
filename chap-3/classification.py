@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from fire import Fire
 from sklearn.datasets import fetch_openml
 from sklearn.ensemble import RandomForestClassifier #Random Forest
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.linear_model import SGDClassifier #Stochastic Gradient Descent
 from sklearn.preprocessing import StandardScaler
@@ -79,7 +80,17 @@ def main():
     # np.fill_diagonal(norm_conf_mx, 0) #fill diagonal with 0s, keep only the errors
     # plt.matshow(norm_conf_mx, cmap=plt.cm.gray)
     # save_fig('compare-errors-rates', tight_layout=False)
-    check_individual_errors(X_train, y_train, y_train_pred_scaled, 3, 5)
+
+    # check_individual_errors(X_train, y_train, y_train_pred_scaled, 3, 5)
+
+    y_train_large = (y_train >= 7)
+    y_train_odd = (y_train % 2 == 1)
+    y_multilabel = np.c_[y_train_large, y_train_odd] #two target labels
+
+    knn_clf = KNeighborsClassifier() #support multilabel classification
+    knn_clf.fit(X_train, y_multilabel)
+    print(f'The digit: {digit}\n')
+    print(f'>=7, odd: {knn_clf.predict([some_digit])}')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
