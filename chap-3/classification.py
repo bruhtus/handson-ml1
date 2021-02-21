@@ -35,7 +35,7 @@ def main():
     # y_train_5 = (y_train == 5)
     # y_test_5 = (y_test == 5)
 
-    sgd_clf = SGDClassifier(max_iter=5, tol=-np.infty, random_state=42)
+    # sgd_clf = SGDClassifier(max_iter=5, tol=-np.infty, random_state=42)
     # sgd_clf.fit(X_train, y_train_5)
 
     # predict_with_threshold(sgd_clf, some_digit)
@@ -64,8 +64,8 @@ def main():
     # forest_clf.fit(X_train, y_train)
     # clf_predict_forest(forest_clf, digit, some_digit)
 
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train.astype(np.float64))
+    # scaler = StandardScaler()
+    # X_train_scaled = scaler.fit_transform(X_train.astype(np.float64))
     # print(f'Without scaler: {cross_val_score(sgd_clf, X_train, y_train, cv=3, scoring="accuracy")}')
     # print(f'With scaler: {cross_val_score(sgd_clf, X_train_scaled, y_train, cv=3, scoring="accuracy")}')
 
@@ -83,16 +83,28 @@ def main():
 
     # check_individual_errors(X_train, y_train, y_train_pred_scaled, 3, 5)
 
-    y_train_large = (y_train >= 7)
-    y_train_odd = (y_train % 2 == 1)
-    y_multilabel = np.c_[y_train_large, y_train_odd] #two target labels
+    # y_train_large = (y_train >= 7)
+    # y_train_odd = (y_train % 2 == 1)
+    # y_multilabel = np.c_[y_train_large, y_train_odd] #two target labels
 
-    knn_clf = KNeighborsClassifier() #support multilabel classification
-    knn_clf.fit(X_train, y_multilabel)
+    # knn_clf = KNeighborsClassifier() #support multilabel classification
+    # knn_clf.fit(X_train, y_multilabel)
     # print(f'The digit: {digit}\n')
     # print(f'>=7, odd: {knn_clf.predict([some_digit])}')
-    y_train_knn_pred = cross_val_predict(knn_clf, X_train, y_train, cv=3)
-    print(f'KNN f1-score: {f1_score(y_train, y_train_knn_pred, average="macro")}')
+    # y_train_knn_pred = cross_val_predict(knn_clf, X_train, y_train, cv=3)
+    # print(f'KNN f1-score: {f1_score(y_train, y_train_knn_pred, average="macro")}')
+
+    noise = np.random.randint(0, 100, (len(X_train), 784))
+    X_train_mod = X_train + noise
+    noise = np.random.randint(0, 100, (len(X_test), 784))
+    X_test_mod = X_test + noise
+    y_train_mod = X_train
+    y_test_mod = X_test
+
+    some_index = 5500
+    plt.subplot(121); plot_digit(X_test_mod[some_index])
+    plt.subplot(122); plot_digit(y_test_mod[some_index])
+    save_fig('noisy-digit-example-plot')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
