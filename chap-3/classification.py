@@ -87,7 +87,7 @@ def main():
     # y_train_odd = (y_train % 2 == 1)
     # y_multilabel = np.c_[y_train_large, y_train_odd] #two target labels
 
-    # knn_clf = KNeighborsClassifier() #support multilabel classification
+    knn_clf = KNeighborsClassifier() #support multilabel classification
     # knn_clf.fit(X_train, y_multilabel)
     # print(f'The digit: {digit}\n')
     # print(f'>=7, odd: {knn_clf.predict([some_digit])}')
@@ -102,9 +102,14 @@ def main():
     y_test_mod = X_test
 
     some_index = 5500
-    plt.subplot(121); plot_digit(X_test_mod[some_index])
-    plt.subplot(122); plot_digit(y_test_mod[some_index])
-    save_fig('noisy-digit-example-plot')
+    # plt.subplot(121); plot_digit(X_test_mod[some_index])
+    # plt.subplot(122); plot_digit(y_test_mod[some_index])
+    # save_fig('noisy-digit-example-plot')
+
+    knn_clf.fit(X_train_mod, y_train_mod)
+    clean_digit = knn_clf.predict([X_test_mod[some_index]])
+    plot_digit(clean_digit)
+    save_fig('cleaned-digit-example')
 
 def sort_by_target(mnist):
     reorder_train = np.array(sorted([(target, i) for i, target in enumerate(mnist.target[:60000])]))[:, 1]
