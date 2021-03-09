@@ -9,7 +9,7 @@ from fire import Fire
 from scipy.stats import randint
 
 from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer #to replace missing values
+from sklearn.impute import SimpleImputer  #to replace missing values
 from sklearn.compose import ColumnTransformer
 from sklearn.metrics import mean_squared_error
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -35,16 +35,19 @@ from sklearn.preprocessing import FunctionTransformer
 #from sklearn.preprocessing import LabelBinarizer
 #from sklearn.preprocessing import Imputer #deprecated
 
+
 def main(data):
     pd.set_option('display.max_columns', None)
     #pd.set_option('display.max_rows', None)
     housing = pd.read_csv(data)
-    housing_with_id = housing.reset_index() #add an 'index' column
+    housing_with_id = housing.reset_index()  #add an 'index' column
     housing_with_id['id'] = housing['longitude'] * 1000 + housing['latitude']
     #train_set, test_set = split_train_test_by_id(housing_with_id, 0.2, 'id')
-    train_set, test_set = train_test_split(housing, test_size=0.2, random_state=42)
+    train_set, test_set = train_test_split(housing,
+                                           test_size=0.2,
+                                           random_state=42)
 
-    housing['income_cat'] = np.ceil(housing['median_income']/1.5)
+    housing['income_cat'] = np.ceil(housing['median_income'] / 1.5)
     housing['income_cat'].where(housing['income_cat'] < 5, 5.0, inplace=True)
     split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
     for train_index, test_index in split.split(housing, housing['income_cat']):
@@ -53,19 +56,21 @@ def main(data):
 
     #commented_out() start here
 
-    housing = strat_train_set.drop('median_house_value', axis=1) #doesn't effect strat_train_set
+    housing = strat_train_set.drop('median_house_value',
+                                   axis=1)  #doesn't effect strat_train_set
     housing_labels = strat_train_set['median_house_value'].copy()
 
     imputer = SimpleImputer(strategy='median')
     housing_num = housing.drop('ocean_proximity', axis=1)
 
-    imputer.fit(housing_num) #fit the imputer instance to training data
+    imputer.fit(housing_num)  #fit the imputer instance to training data
     #commented_out_2() start here
 
     #build a pipeline
     num_pipeline = Pipeline([
         ('imputer', SimpleImputer(strategy='median')),
-        ('attribs_adder', FunctionTransformer(add_extra_features, validate=False)),
+        ('attribs_adder',
+         FunctionTransformer(add_extra_features, validate=False)),
         ('std_scaler', StandardScaler()),
     ])
 
@@ -90,18 +95,35 @@ def main(data):
     #linear_regression(new_housing_prepared, housing_labels, housing)
     #svm(new_housing_prepared, housing_labels)
 
-    #gridsearchcv_random_forest(new_housing_prepared, housing_labels, num_attribs, new_full_pipeline)
+    #gridsearchcv_random_forest(new_housing_prepared, housing_labels,
+                               num_attribs, new_full_pipeline)
     #randomizedsearchcv_random_forest(new_housing_prepared, housing_labels)
 
-    fm_gridsearch_random_forest(new_housing_prepared, housing_labels, num_attribs, new_full_pipeline, strat_test_set)
+    fm_gridsearch_random_forest(new_housing_prepared, housing_labels,
+                                num_attribs, new_full_pipeline, strat_test_set)
 
-def gridsearchcv_random_forest(pipeline, housing_labels, num_attribs, full_pipeline):
+
+def gridsearchcv_random_forest(pipeline, housing_labels, num_attribs,
+                               full_pipeline):
     param_grid = [
-        {'n_estimators': [3, 10, 30], 'max_features': [2, 4, 6, 8]}, #try 3*4 (12) combination of hyperparameters
-        {'bootstrap': [False], 'n_estimators': [3, 10], 'max_features': [2, 3, 4]} #and then try 2*3 (6) combination with bootstrap set as False
+        {
+            'n_estimators': [3, 10, 30],
+            'max_features': [2, 4, 6, 8]
+        },  #try 3*4 (12) combination of hyperparameters
+        {
+            'bootstrap': [False],
+            'n_estimators': [3, 10],
+            'max_features': [2, 3, 4]
+        }  #and then try 2*3 (6) combination with bootstrap set as False
     ]
     forest_reg = RandomForestRegressor(random_state=42)
-    grid_search = GridSearchCV(forest_reg, param_grid, cv=5, scoring='neg_mean_squared_error', return_train_score=True) #train across 5 folds, total of (12+6)*5=90 rounds of training
+    grid_search = GridSearchCV(
+        forest_reg,
+        param_grid,
+        cv=5,
+        scoring='neg_mean_squared_error',
+        return_train_score=True
+    )  #train across 5 folds, total of (12+6)*5=90 rounds of training
     grid_search.fit(pipeline, housing_labels)
     #print(f'Random Forest Best Params: {grid_search.best_params_}\n')
     #print(grid_search.best_estimator_)
@@ -118,13 +140,29 @@ def gridsearchcv_random_forest(pipeline, housing_labels, num_attribs, full_pipel
     #attributes = num_attribs + extra_attribs + cat_one_hot_attribs
     #print(sorted(zip(feature_importances, attributes), reverse=True))
 
-def fm_gridsearch_random_forest(pipeline, housing_labels, num_attribs, full_pipeline, strat_test_set): #final model gridsearch random forest
+
+def fm_gridsearch_random_forest(
+        pipeline, housing_labels, num_attribs, full_pipeline,
+        strat_test_set):  #final model gridsearch random forest
     param_grid = [
-        {'n_estimators': [3, 10, 30], 'max_features': [2, 4, 6, 8]}, #try 3*4 (12) combination of hyperparameters
-        {'bootstrap': [False], 'n_estimators': [3, 10], 'max_features': [2, 3, 4]} #and then try 2*3 (6) combination with bootstrap set as False
+        {
+            'n_estimators': [3, 10, 30],
+            'max_features': [2, 4, 6, 8]
+        },  #try 3*4 (12) combination of hyperparameters
+        {
+            'bootstrap': [False],
+            'n_estimators': [3, 10],
+            'max_features': [2, 3, 4]
+        }  #and then try 2*3 (6) combination with bootstrap set as False
     ]
     forest_reg = RandomForestRegressor(random_state=42)
-    grid_search = GridSearchCV(forest_reg, param_grid, cv=5, scoring='neg_mean_squared_error', return_train_score=True) #train across 5 folds, total of (12+6)*5=90 rounds of training
+    grid_search = GridSearchCV(
+        forest_reg,
+        param_grid,
+        cv=5,
+        scoring='neg_mean_squared_error',
+        return_train_score=True
+    )  #train across 5 folds, total of (12+6)*5=90 rounds of training
     grid_search.fit(pipeline, housing_labels)
 
     final_model = grid_search.best_estimator_
@@ -140,36 +178,47 @@ def fm_gridsearch_random_forest(pipeline, housing_labels, num_attribs, full_pipe
     final_rmse = np.sqrt(final_mse)
     print(f'Final prediction random forest: {final_rmse}')
 
+
 def randomizedsearchcv_random_forest(pipeline, housing_labels):
     param_distribs = {
         'n_estimators': randint(low=1, high=200),
         'max_features': randint(low=1, high=8),
     }
     forest_reg = RandomForestRegressor(random_state=42)
-    rnd_search = RandomizedSearchCV(forest_reg, param_distributions=param_distribs,
-                                    n_iter=10, cv=5, scoring='neg_mean_squared_error',
+    rnd_search = RandomizedSearchCV(forest_reg,
+                                    param_distributions=param_distribs,
+                                    n_iter=10,
+                                    cv=5,
+                                    scoring='neg_mean_squared_error',
                                     random_state=42)
     rnd_search.fit(pipeline, housing_labels)
     cvres = rnd_search.cv_results_
     for mean_score, params in zip(cvres['mean_test_score'], cvres['params']):
         print(np.sqrt(-mean_score), params)
 
+
 def random_forest(pipeline, housing_labels):
     forest_reg = RandomForestRegressor(n_estimators=10, random_state=42)
     forest_reg.fit(pipeline, housing_labels)
 
     housing_predictions_forest_reg = forest_reg.predict(pipeline)
-    forest_mse = mean_squared_error(housing_labels, housing_predictions_forest_reg)
+    forest_mse = mean_squared_error(housing_labels,
+                                    housing_predictions_forest_reg)
     forest_rmse = np.sqrt(forest_mse)
     #print(forest_rmse)
 
-    forest_scores = cross_val_score(forest_reg, pipeline, housing_labels, scoring='neg_mean_squared_error', cv=10)
+    forest_scores = cross_val_score(forest_reg,
+                                    pipeline,
+                                    housing_labels,
+                                    scoring='neg_mean_squared_error',
+                                    cv=10)
     forest_rmse_scores = np.sqrt(-forest_scores)
 
     print('random forest:')
     print(f'Scores:\n{forest_rmse_scores}')
     print(f'Mean:{forest_rmse_scores.mean()}')
     print(f'Standard deviation:{forest_rmse_scores.std()}\n')
+
 
 def decision_tree(pipeline, housing_labels):
     tree_reg = DecisionTreeRegressor()
@@ -180,13 +229,18 @@ def decision_tree(pipeline, housing_labels):
     tree_mse = np.sqrt(tree_mse)
     #print(f'Mean Squared Error(Decision Tree): {tree_mse}\n')
 
-    tree_scores = cross_val_score(tree_reg, pipeline, housing_labels, scoring='neg_mean_squared_error', cv=10)
+    tree_scores = cross_val_score(tree_reg,
+                                  pipeline,
+                                  housing_labels,
+                                  scoring='neg_mean_squared_error',
+                                  cv=10)
     tree_rmse_scores = np.sqrt(-tree_scores)
 
     print('decision tree:')
     print(f'Scores:\n{tree_rmse_scores}')
     print(f'Mean: {tree_rmse_scores.mean()}')
     print(f'Standard deviation: {tree_rmse_scores.std()}\n')
+
 
 def linear_regression(pipeline, housing_labels, housing):
     lin_reg = LinearRegression()
@@ -203,13 +257,18 @@ def linear_regression(pipeline, housing_labels, housing):
     lin_mse = np.sqrt(lin_mse)
     print(f'Mean Squared Error(linear regression): {lin_mse}\n')
 
-    lin_scores = cross_val_score(lin_reg, pipeline, housing_labels, scoring='neg_mean_squared_error', cv=10)
+    lin_scores = cross_val_score(lin_reg,
+                                 pipeline,
+                                 housing_labels,
+                                 scoring='neg_mean_squared_error',
+                                 cv=10)
     lin_rmse_scores = np.sqrt(-lin_scores)
 
     print('linear regression:')
     print(f'Scores:\n{lin_rmse_scores}')
     print(f'Mean: {lin_rmse_scores.mean()}')
     print(f'Standard deviation: {lin_rmse_scores.std()}\n')
+
 
 def svm(pipeline, housing_labels):
     svm_reg = SVR(kernel='linear')
@@ -220,16 +279,20 @@ def svm(pipeline, housing_labels):
     svm_rmse = np.sqrt(svm_mse)
     print(svm_rmse)
 
+
 def test_set_check(identifier, test_ratio, hash):
     return hash(np.int64(identifier)).digest()[-1] < 256 * test_ratio
+
 
 def split_train_test_by_id(data, test_ratio, id_column, hash=hashlib.md5):
     ids = data[id_column]
     in_test_set = ids.apply(lambda id_: test_set_check(id_, test_ratio, hash))
     return data.loc[~in_test_set], data.loc[in_test_set]
 
+
 def income_cat_proportions(data):
-    return data['income_cat'].value_counts()/len(data)
+    return data['income_cat'].value_counts() / len(data)
+
 
 def add_extra_features(X, add_bedrooms_per_room=True):
     rooms_ix, bedrooms_ix, population_ix, household_ix = 3, 4, 5, 6
@@ -237,9 +300,11 @@ def add_extra_features(X, add_bedrooms_per_room=True):
     population_per_household = X[:, population_ix] / X[:, household_ix]
     if add_bedrooms_per_room:
         bedrooms_per_room = X[:, bedrooms_ix] / X[:, rooms_ix]
-        return np.c_[X, rooms_per_household, population_per_household, bedrooms_per_room]
+        return np.c_[X, rooms_per_household, population_per_household,
+                     bedrooms_per_room]
     else:
         return np.c_[X, rooms_per_household, population_per_household]
+
 
 def commented_out():
     print('the first line commented out')
@@ -252,7 +317,7 @@ def commented_out():
     #housing['income_cat'].hist()
     #print(f'{plt.show()}\n')
 
-    ##show income category train and test set
+    #show income category train and test set
     #print(f"income category test set:\n{strat_test_set['income_cat'].value_counts()/len(strat_test_set)}\n")
     #print(f"income category train set:\n{strat_train_set['income_cat'].value_counts()/len(strat_test_set)}\n")
 
@@ -296,6 +361,7 @@ def commented_out():
     #corr_matrix = housing.corr()
     #print(corr_matrix['median_house_value'].sort_values(ascending=False))
 
+
 def commented_out_2():
     print('the second commented out line')
     #print(imputer.statistics_)
@@ -331,6 +397,7 @@ def commented_out_2():
     #    index=housing.index)
     #print(housing_extra_attribs.head())
 
+
 def old_pipeline():
     print('old pipeline using FeatureUnion')
     #old_num_pipeline = Pipeline([
@@ -353,6 +420,7 @@ def old_pipeline():
     #old_housing_prepared = old_full_pipeline.fit_transform(housing)
     #print(f'FeatureUnion pipeline:\n{old_housing_prepared}\n')
 
+
 class CombinedAttributesAdder(BaseEstimator, TransformerMixin):
     def __init__(self, add_bedrooms_per_room=True):
         self.add_bedrooms_per_room = add_bedrooms_per_room
@@ -362,13 +430,15 @@ class CombinedAttributesAdder(BaseEstimator, TransformerMixin):
 
     def transform(self, X, y=None):
         rooms_ix, bedrooms_ix, population_ix, household_ix = 3, 4, 5, 6
-        rooms_per_household = X[:, rooms_ix]/X[:, household_ix]
-        population_per_household = X[:, population_ix]/X[:, household_ix]
+        rooms_per_household = X[:, rooms_ix] / X[:, household_ix]
+        population_per_household = X[:, population_ix] / X[:, household_ix]
         if self.add_bedrooms_per_room:
-            bedrooms_per_room = X[:, bedrooms_ix]/X[:, rooms_ix]
-            return np.c_[X, rooms_per_household, population_per_household, bedrooms_per_room]
+            bedrooms_per_room = X[:, bedrooms_ix] / X[:, rooms_ix]
+            return np.c_[X, rooms_per_household, population_per_household,
+                         bedrooms_per_room]
         else:
             return np.c_[X, rooms_per_household, population_per_household]
+
 
 class OldDataFrameSelector(BaseEstimator, TransformerMixin):
     def __init__(self, attribute_names):
@@ -379,6 +449,7 @@ class OldDataFrameSelector(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         return X[self.attribute_names].values
+
 
 if __name__ == '__main__':
     Fire(main)
