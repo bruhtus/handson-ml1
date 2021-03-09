@@ -48,6 +48,7 @@ def main(data):
 
     housing["income_cat"] = np.ceil(housing["median_income"] / 1.5)
     housing["income_cat"].where(housing["income_cat"] < 5, 5.0, inplace=True)
+
     split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
     for train_index, test_index in split.split(housing, housing["income_cat"]):
         strat_train_set = housing.loc[train_index]
@@ -74,9 +75,6 @@ def main(data):
             ("std_scaler", StandardScaler()),
         ]
     )
-
-    # housing_num_tr = num_pipeline.fit_transform(housing_num)
-    # print(housing_num_tr)
 
     num_attribs = list(housing_num)
     cat_attribs = ["ocean_proximity"]
@@ -217,6 +215,7 @@ def random_forest(pipeline, housing_labels):
     forest_scores = cross_val_score(
         forest_reg, pipeline, housing_labels, scoring="neg_mean_squared_error", cv=10
     )
+
     forest_rmse_scores = np.sqrt(-forest_scores)
 
     print("random forest:")
@@ -237,6 +236,7 @@ def decision_tree(pipeline, housing_labels):
     tree_scores = cross_val_score(
         tree_reg, pipeline, housing_labels, scoring="neg_mean_squared_error", cv=10
     )
+
     tree_rmse_scores = np.sqrt(-tree_scores)
 
     print("decision tree:")
@@ -263,6 +263,7 @@ def linear_regression(pipeline, housing_labels, housing):
     lin_scores = cross_val_score(
         lin_reg, pipeline, housing_labels, scoring="neg_mean_squared_error", cv=10
     )
+
     lin_rmse_scores = np.sqrt(-lin_scores)
 
     print("linear regression:")
