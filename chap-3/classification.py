@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 
 from fire import Fire
 from sklearn.datasets import fetch_openml
-from sklearn.ensemble import RandomForestClassifier  #Random Forest
+from sklearn.ensemble import RandomForestClassifier  # Random Forest
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.multiclass import OneVsOneClassifier
-from sklearn.linear_model import SGDClassifier  #Stochastic Gradient Descent
+from sklearn.linear_model import SGDClassifier  # Stochastic Gradient Descent
 from sklearn.preprocessing import StandardScaler
 
 from sklearn.base import clone
@@ -23,10 +23,10 @@ from sklearn.model_selection import cross_val_predict
 
 
 def main():
-    mnist = fetch_openml('mnist_784', version=1, cache=True)
+    mnist = fetch_openml("mnist_784", version=1, cache=True)
     mnist.target = mnist.target.astype(np.int8)
     sort_by_target(mnist)
-    X, y = mnist['data'], mnist['target']
+    X, y = mnist["data"], mnist["target"]
     digit = y[36000]
     some_digit = X[36000]
     X_train, X_test = X[:60000], X[60000:]
@@ -103,7 +103,7 @@ def main():
     # y_train_odd = (y_train % 2 == 1)
     # y_multilabel = np.c_[y_train_large, y_train_odd] #two target labels
 
-    knn_clf = KNeighborsClassifier()  #support multilabel classification
+    knn_clf = KNeighborsClassifier()  # support multilabel classification
 
     # knn_clf.fit(X_train, y_multilabel)
     # print(f'The digit: {digit}\n')
@@ -128,16 +128,16 @@ def main():
     knn_clf.fit(X_train_mod, y_train_mod)
     clean_digit = knn_clf.predict([X_test_mod[some_index]])
     plot_digit(clean_digit)
-    save_fig('cleaned-digit-example')
+    save_fig("cleaned-digit-example")
 
 
 def sort_by_target(mnist):
     reorder_train = np.array(
-        sorted([(target, i)
-                for i, target in enumerate(mnist.target[:60000])]))[:, 1]
+        sorted([(target, i) for i, target in enumerate(mnist.target[:60000])])
+    )[:, 1]
     reorder_test = np.array(
-        sorted([(target, i)
-                for i, target in enumerate(mnist.target[60000:])]))[:, 1]
+        sorted([(target, i) for i, target in enumerate(mnist.target[60000:])])
+    )[:, 1]
     mnist.data[:60000] = mnist.data[reorder_train]
     mnist.target[:60000] = mnist.target[reorder_train]
     mnist.data[60000:] = mnist.data[reorder_test + 60000]
@@ -145,17 +145,17 @@ def sort_by_target(mnist):
 
 
 def save_fig(fig_id, tight_layout=True):
-    path = os.path.join('.', fig_id + ".png")
-    print('Saving figure', fig_id)
+    path = os.path.join(".", fig_id + ".png")
+    print("Saving figure", fig_id)
     if tight_layout:
         plt.tight_layout()
-    plt.savefig(path, format='png', dpi=300)
+    plt.savefig(path, format="png", dpi=300)
 
 
 def plot_digit(data):
     image = data.reshape(28, 28)
-    plt.imshow(image, cmap=mpl.cm.binary, interpolation='nearest')
-    plt.axis('off')
+    plt.imshow(image, cmap=mpl.cm.binary, interpolation="nearest")
+    plt.axis("off")
 
 
 def plot_digits(instances, images_per_row=10, **options):
@@ -168,12 +168,12 @@ def plot_digits(instances, images_per_row=10, **options):
     images.append(np.zeros((size, size * n_empty)))
 
     for row in range(n_rows):
-        rimages = images[row * images_per_row:(row + 1) * images_per_row]
+        rimages = images[row * images_per_row : (row + 1) * images_per_row]
         row_images.append(np.concatenate(rimages, axis=1))
 
     image = np.concatenate(row_images, axis=0)
     plt.imshow(image, cmap=mpl.cm.binary, **options)
-    plt.axis('off')
+    plt.axis("off")
 
 
 def cross_validation_implementation(sgd_clf, X_train, y_train):
@@ -183,9 +183,9 @@ def cross_validation_implementation(sgd_clf, X_train, y_train):
     for train_index, test_index in skfolds.split(X_train, y_train):
         clone_clf = clone(sgd_clf)
         X_train_folds = X_train[train_index]
-        y_train_folds = (y_train[train_index])
+        y_train_folds = y_train[train_index]
         X_test_folds = X_train[test_index]
-        y_test_folds = (y_train[test_index])
+        y_test_folds = y_train[test_index]
 
         clone_clf.fit(X_train_folds, y_train_folds)
         y_pred = clone_clf.predict(X_test_folds)
@@ -213,68 +213,57 @@ def plot_precision_vs_recall(precisions, recalls):
 
 def plot_roc_curve(fpr, tpr, label=None):
     plt.plot(fpr, tpr, linewidth=2, label=label)
-    plt.plot([0, 1], [0, 1], 'k--')
+    plt.plot([0, 1], [0, 1], "k--")
     plt.axis([0, 1, 0, 1])
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate")
 
 
 def random_forest_plot(forest_clf, X_train, y_train_5, fpr, tpr):
-    y_probas_forest = cross_val_predict(forest_clf,
-                                        X_train,
-                                        y_train_5,
-                                        cv=3,
-                                        method="predict_proba")
-    y_scores_forest = y_probas_forest[:,
-                                      1]  #score = probability of positive class
-    fpr_forest, tpr_forest, thresholds_forest = roc_curve(
-        y_train_5, y_scores_forest)
+    y_probas_forest = cross_val_predict(
+        forest_clf, X_train, y_train_5, cv=3, method="predict_proba"
+    )
+    y_scores_forest = y_probas_forest[:, 1]  # score = probability of positive class
+    fpr_forest, tpr_forest, thresholds_forest = roc_curve(y_train_5, y_scores_forest)
     plt.plot(fpr, tpr, "b:", label="SGD")
     plot_roc_curve(fpr_forest, tpr_forest, "Random Forest")
     plt.legend(loc="lower right")
-    save_fig('random-forest-curve')
+    save_fig("random-forest-curve")
 
 
 def random_forest_precision_recall(forest_clf, X_train, y_train_5):
-    y_train_pred_forest = cross_val_predict(forest_clf,
-                                            X_train,
-                                            y_train_5,
-                                            cv=3)
-    print(
-        f'Precision Random Forest: {precision_score(y_train_5, y_train_pred_forest)}'
-    )
-    print(
-        f'Recall Random Forest: {recall_score(y_train_5, y_train_pred_forest)}'
-    )
+    y_train_pred_forest = cross_val_predict(forest_clf, X_train, y_train_5, cv=3)
+    print(f"Precision Random Forest: {precision_score(y_train_5, y_train_pred_forest)}")
+    print(f"Recall Random Forest: {recall_score(y_train_5, y_train_pred_forest)}")
 
 
 def plot_precision_recall_threshold(precisions, recalls, thresholds):
     plot_precision_recall_vs_threshold(precisions, recalls, thresholds)
     plot_precision_vs_recall(precisions, recalls)
-    save_fig('precision-recall')
+    save_fig("precision-recall")
 
 
 def precision_higher_90(y_scores, y_train_5):
-    y_train_pred_90 = (y_scores > 70000)
+    y_train_pred_90 = y_scores > 70000
     print(
-        f'Precision (almost or higher than 90%): {precision_score(y_train_5, y_train_pred_90)}'
+        f"Precision (almost or higher than 90%): {precision_score(y_train_5, y_train_pred_90)}"
     )
-    print(f'Recall: {recall_score(y_train_5, y_train_pred_90)}')
+    print(f"Recall: {recall_score(y_train_5, y_train_pred_90)}")
 
 
 def predict_with_threshold(sgd_clf, some_digit):
     y_scores = sgd_clf.decision_function([some_digit])
-    print(f'Decision function score: {y_scores}')
+    print(f"Decision function score: {y_scores}")
     threshold = 100000
-    y_some_digit_pred = (y_scores > threshold)
-    print(f'Prediction result (threshold: {threshold}): {y_some_digit_pred}\n')
+    y_some_digit_pred = y_scores > threshold
+    print(f"Prediction result (threshold: {threshold}): {y_some_digit_pred}\n")
 
 
 def OneVsOne_classifier(X_train, y_train, some_digit):
     ovo_clf = OneVsOneClassifier(SGDClassifier(random_state=42))
     ovo_clf.fit(X_train, y_train)
-    print(f'Predict: {ovo_clf.predict([some_digit])}')
-    print(f'Length estimators: {len(ovo_clf.estimators_)}')
+    print(f"Predict: {ovo_clf.predict([some_digit])}")
+    print(f"Length estimators: {len(ovo_clf.estimators_)}")
 
 
 def randomforest_plot_5detector(forest_clf, X_train, y_train_5, fpr, tpr):
@@ -283,19 +272,18 @@ def randomforest_plot_5detector(forest_clf, X_train, y_train_5, fpr, tpr):
 
 
 def clf_predict_forest(clf, target_digit, image_digit):
-    print(f'Real digit: {target_digit}')
-    print(f'Predict: {clf.predict([image_digit])}')
-    print(f'Classes: {clf.classes_}')
-    print(f'Probabilities each class: {clf.predict_proba([image_digit])}')
+    print(f"Real digit: {target_digit}")
+    print(f"Predict: {clf.predict([image_digit])}")
+    print(f"Classes: {clf.classes_}")
+    print(f"Probabilities each class: {clf.predict_proba([image_digit])}")
 
 
 def clf_predict_sgd(clf, target_digit, image_digit):
-    print(f'Real digit: {target_digit}')
-    print(f'Predict: {clf.predict([image_digit])}')
-    print(f'Classes: {clf.classes_}')
+    print(f"Real digit: {target_digit}")
+    print(f"Predict: {clf.predict([image_digit])}")
+    print(f"Classes: {clf.classes_}")
     scores = clf.decision_function([image_digit])
-    print(f'Index with highest score: {np.argmax(scores)}'
-          )  #return the highest score
+    print(f"Index with highest score: {np.argmax(scores)}")  # return the highest score
 
 
 def check_individual_errors(X_train, y_train, y_train_pred, cl_a, cl_b):
@@ -313,7 +301,7 @@ def check_individual_errors(X_train, y_train, y_train_pred, cl_a, cl_b):
     plot_digits(X_ba[:25], images_per_row=5)
     plt.subplot(224)
     plot_digits(X_bb[:25], images_per_row=5)
-    save_fig('error-analysis-digits-plot', tight_layout=False)
+    save_fig("error-analysis-digits-plot", tight_layout=False)
 
 
 class Never5Classifier(BaseEstimator):
@@ -324,5 +312,5 @@ class Never5Classifier(BaseEstimator):
         return np.zeros((len(X), 1), dtype=bool)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     Fire(main)
