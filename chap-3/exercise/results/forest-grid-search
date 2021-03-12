@@ -1,0 +1,2 @@
+Random Forest Best Parameter: {'criterion': 'entropy', 'max_features': 8, 'n_estimators': 30}
+Random Forest Best Score: 0.9554499999999999

@@ -1,0 +1,2 @@
+SGD Best Parameter: {'alpha': 0.0001, 'loss': 'log'}
+SGD Best Score: 0.8702333333333333
