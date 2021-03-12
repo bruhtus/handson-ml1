@@ -1,1 +1,2 @@
-KNN Accuracy Score: 0.9714
+KNN Accuracy Score (GridSearchCV): 0.9714
+KNN Accuracy Score (RandomizedSearchCV): 0.9714

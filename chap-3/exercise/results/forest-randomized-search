@@ -1,0 +1,2 @@
+Random Forest Best Parameter: {'n_estimators': 30, 'max_features': 8, 'criterion': 'gini'}
+Random Forest Best Score: 0.9546833333333332

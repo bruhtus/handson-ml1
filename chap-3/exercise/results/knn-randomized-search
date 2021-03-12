@@ -1,0 +1,2 @@
+KNN Best Parameter: {'weights': 'distance', 'n_neighbors': 4}
+KNN Best Score: 0.9716166666666666

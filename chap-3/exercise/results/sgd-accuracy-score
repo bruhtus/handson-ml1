@@ -1,1 +1,2 @@
-SGD Accuracy Score: 0.8738
+SGD Accuracy Score (GridSearchCV): 0.8738
+SGD Accuracy Score (RandomizedSearchCV): 0.8669

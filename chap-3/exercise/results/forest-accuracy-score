@@ -1,1 +1,2 @@
-Random Forest Accuracy Score: 0.9577
+Random Forest Accuracy Score (GridSearchCV): 0.9577
+Random Forest Accuracy Score (RandomizedSearchCV): 0.9574

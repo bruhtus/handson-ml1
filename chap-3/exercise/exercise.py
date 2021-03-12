@@ -40,7 +40,11 @@ def main():
 
     # knn_gridsearch(knn_clf, X_train, y_train, X_test, y_test)
     # sgd_gridsearch(sgd_clf, X_train, y_train, X_test, y_test)
-    forest_gridsearch(forest_clf, X_train, y_train, X_test, y_test)
+    # forest_gridsearch(forest_clf, X_train, y_train, X_test, y_test)
+
+    # knn_randomizedsearch(knn_clf, X_train, y_train, X_test, y_test)
+    sgd_randomizedsearch(sgd_clf, X_train, y_train, X_test, y_test)
+    forest_randomizedsearch(forest_clf, X_train, y_train, X_test, y_test)
 
 
 def sort_by_target(mnist):
@@ -112,6 +116,85 @@ def forest_gridsearch(forest, X_train, y_train, X_test, y_test):
     with open('forest-grid-search', 'w') as f:
         f.write(f'Random Forest Best Parameter: {best_params}\n')
         f.write(f'Random Forest Best Score: {best_score}\n')
+
+    with open('forest-accuracy-score', 'w') as f:
+        f.write(f'Random Forest Accuracy Score: {accuracy}')
+
+
+def knn_randomizedsearch(knn, X_train, y_train, X_test, y_test):
+    knn.fit(X_train, y_train)
+    param_distribs = [{
+        'weights': ['uniform', 'distance'],
+        'n_neighbors': [3, 4, 5]
+        }]
+    randomized_search = RandomizedSearchCV(
+            knn,
+            param_distribs,
+            cv=5,
+            verbose=3,
+            n_jobs=-1
+            )
+    randomized_search.fit(X_train, y_train)
+    y_pred = randomized_search.predict(X_test)
+    best_params = randomized_search.best_params_
+    best_score = randomized_search.best_score_
+    accuracy = accuracy_score(y_test, y_pred)
+    with open('knn-randomized-search', 'w') as f:
+        f.write(f'KNN Best Parameter: {best_params}\n')
+        f.write(f'KNN Best Score: {best_score}')
+
+    with open('knn-accuracy-score', 'w') as f:
+        f.write(f'KNN Accuracy Score: {accuracy}')
+
+
+def sgd_randomizedsearch(sgd, X_train, y_train, X_test, y_test):
+    sgd.fit(X_train, y_train)
+    param_distribs = [{
+        'loss': ['hinge', 'log', 'modified_huber'],
+        'alpha': [0.0001, 0.00001, 0.000001]
+        }]
+    randomized_search = RandomizedSearchCV(
+            sgd,
+            param_distribs,
+            cv=5,
+            verbose=3,
+            n_jobs=-1
+            )
+    randomized_search.fit(X_train, y_train)
+    y_pred = randomized_search.predict(X_test)
+    best_params = randomized_search.best_params_
+    best_score = randomized_search.best_score_
+    accuracy = accuracy_score(y_test, y_pred)
+    with open('sgd-randomized-search', 'w') as f:
+        f.write(f'SGD Best Parameter: {best_params}\n')
+        f.write(f'SGD Best Score: {best_score}')
+
+    with open('sgd-accuracy-score', 'w') as f:
+        f.write(f'SGD Accuracy Score: {accuracy}')
+
+
+def forest_randomizedsearch(forest, X_train, y_train, X_test, y_test):
+    forest.fit(X_train, y_train)
+    param_distribs = [{
+        'n_estimators': [3, 10, 30],
+        'criterion': ['gini', 'entropy'],
+        "max_features": [2, 4, 6, 8],
+        }]
+    randomized_search = RandomizedSearchCV(
+            forest,
+            param_distribs,
+            cv=5,
+            verbose=3,
+            n_jobs=-1
+            )
+    randomized_search.fit(X_train, y_train)
+    y_pred = randomized_search.predict(X_test)
+    best_params = randomized_search.best_params_
+    best_score = randomized_search.best_score_
+    accuracy = accuracy_score(y_test, y_pred)
+    with open('forest-randomized-search', 'w') as f:
+        f.write(f'Random Forest Best Parameter: {best_params}\n')
+        f.write(f'Random Forest Best Score: {best_score}')
 
     with open('forest-accuracy-score', 'w') as f:
         f.write(f'Random Forest Accuracy Score: {accuracy}')
