@@ -3,21 +3,15 @@ import numpy as np
 
 from fire import Fire
 from sklearn.datasets import fetch_openml
-from sklearn.preprocessing import StandardScaler
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import SGDClassifier
 
-from sklearn.metrics import precision_score, recall_score
-from sklearn.metrics import f1_score, accuracy_score
+from sklearn.metrics import accuracy_score
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
-
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import StratifiedKFold
-from sklearn.model_selection import cross_val_predict
 
 
 def main():
